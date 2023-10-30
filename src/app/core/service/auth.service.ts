@@ -23,9 +23,12 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
+
+  // login function 
+
   login(username: string, password: string) {
     return this.http
-      .post<any>(`${environment.apiUrl}/authenticate`, {
+      .post<any>(`${environment.hosUrl}/api/token`, {
         username,
         password,
       })

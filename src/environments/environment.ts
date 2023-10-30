@@ -5,6 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:4200',
+  hosUrl: 'https://simofane.pythonanywhere.com'
 };
 
 /*
