@@ -1,0 +1,104 @@
+{
+  "MENUITEMS": {
+    "MAIN": {
+      "TEXT": "Principal"
+    },
+    "DASHBOARD": {
+      "TEXT": "Tableau de Bord",
+      "LIST": {
+        "DASHBOARD1": "Tableau de Bord 1",
+        "DASHBOARD2": "Tableau de Bord 2",
+        "DOCTOR-DASHBOARD": "Tableau du Médecin",
+        "PATIENT-DASHBOARD": "Tableau du Patient"
+      }
+    },
+    "APPOINTMENTS": {
+      "TEXT": "Rendez-vous",
+      "LIST": {
+        "VIEW-APPOINTMENT": "Voir un Rendez-vous",
+        "BOOK-APPOINTMENT": "Prendre un Rendez-vous",
+        "EDIT-APPOINTMENT": "Modifier un Rendez-vous"
+      }
+    },
+    "DOCTORS": {
+      "TEXT": "Médecins",
+      "LIST": {
+        "ALL-DOCTOR": "Tous les Médecins",
+        "ADD-DOCTOR": "Ajouter un Médecin",
+        "EDIT-DOCTOR": "Modifier un Médecin",
+        "PROFILE": "Profil"
+      }
+    },
+    "STAFF": {
+      "TEXT": "Personnel",
+      "LIST": {
+        "ALL-STAFF": "Tout le Personnel",
+        "ADD-STAFF": "Ajouter un Membre du Personnel",
+        "EDIT-STAFF": "Modifier un Membre du Personnel",
+        "PROFILE": "Profil"
+      }
+    },
+    "PATIENTS": {
+      "TEXT": "Patients",
+      "LIST": {
+        "ALL-PATIENT": "Tous les Patients",
+        "ADD-PATIENT": "Ajouter un Patient",
+        "EDIT-PATIENT": "Modifier un Patient",
+        "PROFILE": "Profil"
+      }
+    },
+    "ROOMS": {
+      "TEXT": "Affectation des Chambres",
+      "LIST": {
+        "ALLOTED-ROOMS": "Chambres Attribuées",
+        "NEW-ALLOTMENT": "Nouvelle Attribution",
+        "EDIT-ALLOTMENT": "Modifier l'Attribution"
+      }
+    },
+    "PAYMENTS": {
+      "TEXT": "Paiements",
+      "LIST": {
+        "ALL-PAYMENTS": "Tous les Paiements",
+        "ADD-PAYMENT": "Ajouter un Paiement",
+        "INVOICE": "Facture"
+      }
+    },
+    "DOCTOR": {
+      "DASHBOARD": "Tableau de Bord",
+      "APPOINTMENTS": "Rendez-vous",
+      "DOCTORS": "Médecins",
+      "PATIENTS": "Patients",
+      "SETTINGS": "Paramètres",
+      "CHAT": "Discussion"
+    },
+    "PATIENT": {
+      "TEXT": "Patient",
+      "DASHBOARD": "Tableau de Bord",
+      "APPOINTMENTS": {
+        "TEXT": "Rendez-vous",
+        "LIST": {
+          "TODAY": "Rendez-vous d'Aujourd'hui",
+          "UPCOMING": "Rendez-vous à Venir",
+          "PAST": "Rendez-vous Passés"
+        }
+      },
+      "PRESCRIPTIONS": "Ordonnances",
+      "MEDICAL-RECORD": "Dossier Médical",
+      "BILLING": "Facturation",
+      "CHAT": "Discussion",
+      "SETTINGS": "Paramètres"
+    },
+    "APPS": {
+      "TEXT": "-- Applications"
+    },
+    "CALENDAR": {
+      "TEXT": "Calendrier"
+    },
+    "TASK": {
+      "TEXT": "Tâches"
+    },
+    "CONTACTS": {
+      "TEXT": "Contacts"
+    }
+  }
+}
