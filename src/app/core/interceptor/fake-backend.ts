@@ -13,36 +13,7 @@ import { User } from '../models/user';
 import { Role } from '../models/role';
 
 const users: User[] = [
-  {
-    id: 1,
-    img: 'assets/images/user/admin.jpg',
-    username: 'admin@hospital.org',
-    password: 'admin@123',
-    firstName: 'Sarah',
-    lastName: 'Smith',
-    role: Role.Admin,
-    token: 'admin-token',
-  },
-  {
-    id: 2,
-    img: 'assets/images/user/doctor.jpg',
-    username: 'doctor@hospital.org',
-    password: 'doctor@123',
-    firstName: 'Ashton',
-    lastName: 'Cox',
-    role: Role.Doctor,
-    token: 'doctor-token',
-  },
-  {
-    id: 3,
-    img: 'assets/images/user/patient.jpg',
-    username: 'patient@hospital.org',
-    password: 'patient@123',
-    firstName: 'Cara',
-    lastName: 'Stevens',
-    role: Role.Patient,
-    token: 'patient-token',
-  },
+  
 ];
 
 @Injectable()

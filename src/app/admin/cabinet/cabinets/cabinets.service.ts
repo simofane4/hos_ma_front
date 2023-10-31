@@ -1,14 +1,15 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject } from "rxjs";
 import { Cabinets } from "./cabinets.models";
+import { environment } from 'src/environments/environment';
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
 @Injectable()
 export class CabinetsService extends UnsubscribeOnDestroyAdapter{
-  private readonly API_URL  = "https://server.suivi.ma:3232/api/get-cabinet/";// hna khassni n7et url dyali
-  private readonly API_URL_CREATE = "https://server.suivi.ma:3232/api/create-cabinet/"
-  private readonly API_URL_UPDATE = "https://server.suivi.ma:3232/api/update-cabinet/"
-  private readonly API_URL_DELETE = "https://server.suivi.ma:3232/api/delete-cabinet/"
+  private readonly API_URL  =`${environment.restUrl}/cabinet/get`;// hna khassni n7et url dyali
+  private readonly API_URL_CREATE = `${environment.restUrl}/cabinet/create/`
+  private readonly API_URL_UPDATE = `${environment.restUrl}/cabinet/update/`
+  private readonly API_URL_DELETE = `${environment.restUrl}/cabinet/delete/`
   isTblLoading = true;
   dataChange: BehaviorSubject<Cabinets[]> = new BehaviorSubject<Cabinets[]>([]);
   // Temporarily stores data from dialogs

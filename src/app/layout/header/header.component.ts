@@ -105,7 +105,7 @@ export class HeaderComponent
   ngOnInit() {
     this.config = this.configService.configData;
     const userRole = this.authService.currentUserValue.role;
-    this.userImg = this.authService.currentUserValue.img;
+    this.userImg = 'assets/images/user/patient.jpg' ; //this.authService.currentUserValue.img
 
     if (userRole === "Admin") {
       this.homePage = "admin/dashboard/main";
