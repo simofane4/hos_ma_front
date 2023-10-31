@@ -77,7 +77,7 @@ export class FakeBackendInterceptor implements HttpInterceptor {
       }
       return ok({
         id: user.id,
-        img: user.img,
+        //img: user.img,
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,

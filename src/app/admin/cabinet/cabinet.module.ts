@@ -20,7 +20,7 @@ import { MaterialFileInputModule } from "ngx-material-file-input";
 import { MatTabsModule } from "@angular/material/tabs";
 import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 import { ComponentsModule } from "src/app/shared/components/components.module";
-import { SharedModule } from "./../shared/shared.module";
+import { SharedModule } from "./../../shared/shared.module";
 import { CabinetRoutingModule } from './cabinet-routing.module';
 import { CabinetsComponent } from './cabinets/cabinets.component';
 import { CabinetsService } from './cabinets/cabinets.service';
