@@ -66,7 +66,7 @@ export class FormDialogComponent {
   }
   public confirmAdd(): void {
     if (this.action === "edit") {
-      this.cabinetsService.updateCbinets(this.cabinetsForm.getRawValue());
+      this.cabinetsService.updateCabinets(this.cabinetsForm.getRawValue());
     } else {
       this.cabinetsService.addCabinets(this.cabinetsForm.getRawValue());
 

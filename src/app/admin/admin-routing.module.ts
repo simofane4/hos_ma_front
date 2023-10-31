@@ -16,7 +16,7 @@ const routes: Routes = [
     import('./cabinet/cabinet.module').then((m) => m.CabinetModule)
   },
   {
-    path:'cabinet',
+    path:'doctor',
     loadChildren: () =>
     import('./doctor/doctor.module').then((m) => m.DoctorModule)
   },
@@ -27,6 +27,6 @@ const routes: Routes = [
 @NgModule({
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule],
-  
+
 })
 export class AdminRoutingModule {}

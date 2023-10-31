@@ -46,7 +46,7 @@ export class CabinetsService extends UnsubscribeOnDestroyAdapter{
      // error code here
     });
   }
-  updateCbinets(cabinets: Cabinets): void {
+  updateCabinets(cabinets: Cabinets): void {
     this.dialogData = cabinets;
 
      this.httpClient.put(this.API_URL_UPDATE + cabinets.id, cabinets).subscribe(data => {

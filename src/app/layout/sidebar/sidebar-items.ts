@@ -41,6 +41,19 @@ export const ROUTES: RouteInfo[] = [
     role: ["admin"],
     submenu: [],
   },
+  {
+    path: "/admin/doctor/doctor",
+    title: "MENUITEMS.DASHBOARD.TEXT",
+    moduleName: "dashboard",
+    iconType: "material-icons-two-tone",
+    icon: "space_dashboard",
+    class: "",
+    groupTitle: false,
+    badge: "",
+    badgeClass: "",
+    role: ["admin"],
+    submenu: [],
+  },
 
  // Doctor Modules
   {
@@ -71,6 +84,7 @@ export const ROUTES: RouteInfo[] = [
     role: ["patient"],
     submenu: [],
   },
+
 
 
 
