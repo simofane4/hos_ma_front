@@ -9,6 +9,9 @@ export class Doctors {
   mobile: string;
   department: string;
   degree: string;
+
+
+  
   constructor(doctors) {
     {
       this.id = doctors.id || this.getRandomID();
@@ -22,6 +25,9 @@ export class Doctors {
       this.degree = doctors.degree || "";
     }
   }
+
+
+
   public getRandomID(): string {
     const S4 = () => {
       return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);

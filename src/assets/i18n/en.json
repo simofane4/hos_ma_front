@@ -12,6 +12,9 @@
         "PATIENT-DASHBOARD": "Patient Dashboard"
       }
     },
+    "CABINET": {
+      "TEXT": "Office"
+    },
     "APPOINTMENTS": {
       "TEXT": "Appointments",
       "LIST": {

@@ -30,7 +30,7 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: "/admin/cabinet/cabinet",
-    title: "MENUITEMS.DASHBOARD.TEXT",
+    title: "MENUITEMS.CABINET.TEXT",
     moduleName: "dashboard",
     iconType: "material-icons-two-tone",
     icon: "space_dashboard",
@@ -43,7 +43,7 @@ export const ROUTES: RouteInfo[] = [
   },
   {
     path: "/admin/doctor/doctor",
-    title: "MENUITEMS.DASHBOARD.TEXT",
+    title: "MENUITEMS.DOCTORS.TEXT",
     moduleName: "dashboard",
     iconType: "material-icons-two-tone",
     icon: "space_dashboard",

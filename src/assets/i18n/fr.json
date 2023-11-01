@@ -12,6 +12,10 @@
         "PATIENT-DASHBOARD": "Tableau du Patient"
       }
     },
+    "CABINET": {
+      "TEXT": "Cabinet"
+    },
+    
     "APPOINTMENTS": {
       "TEXT": "Rendez-vous",
       "LIST": {
