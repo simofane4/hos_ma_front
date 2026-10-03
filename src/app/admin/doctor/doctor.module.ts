@@ -23,7 +23,7 @@ import { ComponentsModule } from "src/app/shared/components/components.module";
 import { SharedModule } from "./../../shared/shared.module";
 import { DoctorRoutingModule } from './doctor-routing.module';
 import { DoctorsComponent } from './doctors/doctors.component';
-import { DoctorsService } from './doctors/doctors.service';
+import { DoctorService } from './doctors/doctor.service';
 import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
 
 
@@ -61,6 +61,6 @@ import { PerfectScrollbarModule } from 'ngx-perfect-scrollbar';
     SharedModule,
     
   ],
-  providers: [DoctorsService],
+  providers: [DoctorService],
 })
 export class DoctorModule { }

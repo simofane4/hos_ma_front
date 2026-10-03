@@ -1,13 +1,13 @@
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Component, Inject } from "@angular/core";
-import { DoctorsService } from "../../doctors.service";
+import { DoctorService } from "../../doctor.service";
 import {
   FormControl,
   Validators,
   FormGroup,
   FormBuilder,
 } from "@angular/forms";
-import { Doctors } from "./../../doctors.model";
+import { Doctor, DoctorClass } from "./../../doctor.model";
 import { formatDate } from "@angular/common";
 @Component({
   selector: "app-form-dialog",
@@ -17,24 +17,24 @@ import { formatDate } from "@angular/common";
 export class FormDialogComponent {
   action: string;
   dialogTitle: string;
-  doctorsForm: FormGroup;
-  doctors: Doctors;
+  doctorForm: FormGroup;
+  doctor: Doctor;
   constructor(
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    public doctorsService: DoctorsService,
+    public doctorService: DoctorService,
     private fb: FormBuilder
   ) {
     // Set the defaults
     this.action = data.action;
     if (this.action === "edit") {
-      this.dialogTitle = data.doctors.id;
-      this.doctors = data.doctors;
+      this.dialogTitle = data.doctor.id;
+      this.doctor = data.doctor;
     } else {
-      this.dialogTitle = "New Doctors";
-      this.doctors = new Doctors({});
+      this.dialogTitle = "New Doctor";
+      this.doctor = new DoctorClass({});
     }
-    this.doctorsForm = this.createContactForm();
+    this.doctorForm = this.createContactForm();
   }
   formControl = new FormControl("", [
     Validators.required,
@@ -49,18 +49,18 @@ export class FormDialogComponent {
   }
   createContactForm(): FormGroup {
     return this.fb.group({
-      id: [this.doctors.id],
-      img: [this.doctors.img],
-      name: [this.doctors.name],
-      email: [this.doctors.email],
-      date: [
-        formatDate(this.doctors.date, "yyyy-MM-dd", "en"),
-        [Validators.required],
-      ],
-      specialization: [this.doctors.specialization],
-      mobile: [this.doctors.mobile],
-      department: [this.doctors.department],
-      degree: [this.doctors.degree],
+      id: [this.doctor.id],
+      username: [this.doctor.user?.username],
+      email: [this.doctor.user?.email],
+      first_name: [this.doctor.user?.first_name],
+      last_name: [this.doctor.user?.last_name],
+      password: [''],
+      inp: [this.doctor.inp],
+      gender: [this.doctor.gender],
+      phone: [this.doctor.phone],
+      address: [this.doctor.address],
+      specialiste: [this.doctor.specialiste],
+      cabinet: [this.doctor.cabinet],
     });
   }
   submit() {
@@ -70,6 +70,6 @@ export class FormDialogComponent {
     this.dialogRef.close();
   }
   public confirmAdd(): void {
-    this.doctorsService.addDoctors(this.doctorsForm.getRawValue());
+    this.doctorService.addDoctor(this.doctorForm.getRawValue());
   }
 }

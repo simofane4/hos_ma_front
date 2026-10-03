@@ -5,7 +5,7 @@
 export const environment = {
   production: false,
   apiUrl: 'http://localhost:4200',
-  restUrl: 'https://simofane.pythonanywhere.com'
+  restUrl: 'http://localhost:8000'
 };
 
 /*

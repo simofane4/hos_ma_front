@@ -36,34 +36,41 @@ export class AuthService {
     return this.currentUserSubject.value;
   }
 
-  login(username: string, password: string) {
+login(username: string, password: string) {
     return this.http
-      .post<any>(`${environment.restUrl}/api/token/`, {
+      .post<any>(`${environment.restUrl}/api/auth/token/`, {
         username,
         password,
       })
       .pipe(
-        map((user) => {
+        map((response) => {
           // store user details and jwt token in local storage to keep user logged in between page refreshes
-          const decodedtoken = this.helper.decodeToken(user.access);
+          const decodedtoken = this.helper.decodeToken(response.access);
           console.log(decodedtoken);
           this.currentUser.id = decodedtoken.user_id;
-          this.currentUser.username = decodedtoken.name;
+          this.currentUser.username = decodedtoken.username || decodedtoken.name;
           this.currentUser.firstName = decodedtoken.first_name;
           this.currentUser.lastName = decodedtoken.last_name;
           this.currentUser.role = decodedtoken.role;
-          this.currentUser.token = user.access;
-          this.currentUser.refresh = user.refresh
-
+          this.currentUser.token = response.access;
+          this.currentUser.refresh = response.refresh;
 
           localStorage.setItem('currentUser', JSON.stringify(this.currentUser));
           this.currentUserSubject.next(this.currentUser);
-          console.log(this.currentUser)
-          return user;
+          console.log(this.currentUser);
+          return response;
         })
       );
   }
 
+  getProfile(): Observable<any> {
+    return this.http.get(`${environment.restUrl}/api/auth/me/`);
+  }
+
+  refreshToken(): Observable<any> {
+    const refresh = this.currentUserValue?.refresh;
+    return this.http.post(`${environment.restUrl}/api/auth/token/refresh/`, { refresh });
+  }
 
 
   logout() {

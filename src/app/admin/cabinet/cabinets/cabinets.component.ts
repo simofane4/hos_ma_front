@@ -6,7 +6,7 @@ import { DataSource } from "@angular/cdk/collections";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
-import { Cabinets } from './cabinets.models';
+import { Cabinet } from './cabinet.model';
 import { BehaviorSubject, fromEvent, merge, Observable } from "rxjs";
 import { map } from "rxjs/operators";
 import { FormDialogComponent } from "./dialogs/form-dialog/form-dialog.component";
@@ -31,10 +31,10 @@ implements OnInit {
   ];
   Database: CabinetsService | null;
   dataSource: FiltredDataSource | null;
-  selection = new SelectionModel<Cabinets>(true, []);
+  selection = new SelectionModel<Cabinet>(true, []);
   index: number;
   id: number;
-  cabinets: Cabinets | null;
+  cabinet: Cabinet | null;
 
   constructor(
     public httpClient: HttpClient,
@@ -63,7 +63,7 @@ implements OnInit {
     }
     const dialogRef = this.dialog.open(FormDialogComponent, {
       data: {
-        doctors: this.cabinets,
+        cabinet: this.cabinet,
         action: "add",
       },
       direction: tempDirection,
@@ -96,7 +96,7 @@ implements OnInit {
     }
     const dialogRef = this.dialog.open(FormDialogComponent, {
       data: {
-        cabinets: row,
+        cabinet: row,
         action: "edit",
       },
       direction: tempDirection,
@@ -171,7 +171,7 @@ implements OnInit {
       this.Database.dataChange.value.splice(index, 1);
 
       this.refreshTable();
-      this.selection = new SelectionModel<Cabinets>(true, []);
+      this.selection = new SelectionModel<Cabinet>(true, []);
     });
     this.showNotification(
       "snackbar-danger",
@@ -206,7 +206,7 @@ implements OnInit {
   }
 }
 
-export class FiltredDataSource extends DataSource<Cabinets> {
+export class FiltredDataSource extends DataSource<Cabinet> {
   filterChange = new BehaviorSubject("");
   get filter(): string {
     return this.filterChange.value;
@@ -214,8 +214,8 @@ export class FiltredDataSource extends DataSource<Cabinets> {
   set filter(filter: string) {
     this.filterChange.next(filter);
   }
-  filteredData: Cabinets[] = [];
-  renderedData: Cabinets[] = [];
+  filteredData: Cabinet[] = [];
+  renderedData: Cabinet[] = [];
   constructor(
     public Database: CabinetsService,
     public paginator: MatPaginator,
@@ -226,7 +226,7 @@ export class FiltredDataSource extends DataSource<Cabinets> {
     this.filterChange.subscribe(() => (this.paginator.pageIndex = 0));
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<Cabinets[]> {
+  connect(): Observable<Cabinet[]> {
     // Listen for any changes in the base data, sorting, filtering, or pagination
     const displayDataChanges = [
       this.Database.dataChange,
@@ -240,11 +240,11 @@ export class FiltredDataSource extends DataSource<Cabinets> {
         // Filter data
         this.filteredData = this.Database.data
           .slice()
-          .filter((cabinets: Cabinets) => {
+          .filter((cabinet: Cabinet) => {
             const searchStr = (
-              cabinets.name +
-              cabinets.address+
-              cabinets.number
+              cabinet.name +
+              cabinet.address+
+              cabinet.number
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
           });
@@ -262,7 +262,7 @@ export class FiltredDataSource extends DataSource<Cabinets> {
   }
   disconnect() {}
   /** Returns a sorted copy of the database data. */
-  sortData(data: Cabinets[]): Cabinets[] {
+  sortData(data: Cabinet[]): Cabinet[] {
     if (!this._sort.active || this._sort.direction === "") {
       return data;
     }

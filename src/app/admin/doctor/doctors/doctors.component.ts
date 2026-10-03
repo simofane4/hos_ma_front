@@ -1,10 +1,10 @@
 import { Component, ElementRef, OnInit, ViewChild } from "@angular/core";
-import { DoctorsService } from "./doctors.service";
+import { DoctorService } from "./doctor.service";
 import { HttpClient } from "@angular/common/http";
 import { MatDialog } from "@angular/material/dialog";
 import { MatPaginator } from "@angular/material/paginator";
 import { MatSort } from "@angular/material/sort";
-import { Doctors } from "./doctors.model";
+import { Doctor } from "./doctor.model";
 import { DataSource } from "@angular/cdk/collections";
 import { MatSnackBar } from "@angular/material/snack-bar";
 import { BehaviorSubject, fromEvent, merge, Observable } from "rxjs";
@@ -27,24 +27,24 @@ implements OnInit {
     "select",
     "img",
     "name",
-    "department",
     "specialization",
+    "department",
     "degree",
     "mobile",
     "email",
     "date",
     "actions",
   ];
-  exampleDatabase: DoctorsService | null;
+  exampleDatabase: DoctorService | null;
   dataSource: ExampleDataSource | null;
-  selection = new SelectionModel<Doctors>(true, []);
+  selection = new SelectionModel<Doctor>(true, []);
   index: number;
   id: number;
-  doctors: Doctors | null;
+  doctor: Doctor | null;
   constructor(
     public httpClient: HttpClient,
     public dialog: MatDialog,
-    public doctorsService: DoctorsService,
+    public doctorService: DoctorService,
     private snackBar: MatSnackBar
   ) {
     super();
@@ -69,7 +69,7 @@ implements OnInit {
     }
     const dialogRef = this.dialog.open(FormDialogComponent, {
       data: {
-        doctors: this.doctors,
+        doctor: this.doctor,
         action: "add",
       },
       direction: tempDirection,
@@ -79,7 +79,7 @@ implements OnInit {
         // After dialog is closed we're doing frontend updates
         // For add we're just pushing a new row inside DataServicex
         this.exampleDatabase.dataChange.value.unshift(
-          this.doctorsService.getDialogData()
+          this.doctorService.getDialogData()
         );
         this.refreshTable();
         this.showNotification(
@@ -102,7 +102,7 @@ implements OnInit {
     }
     const dialogRef = this.dialog.open(FormDialogComponent, {
       data: {
-        doctors: row,
+        doctor: row,
         action: "edit",
       },
       direction: tempDirection,
@@ -115,7 +115,7 @@ implements OnInit {
         );
         // Then you update that record using data from dialogData (values you enetered)
         this.exampleDatabase.dataChange.value[foundIndex] =
-          this.doctorsService.getDialogData();
+          this.doctorService.getDialogData();
         // And lastly refresh table
         this.refreshTable();
         this.showNotification(
@@ -188,7 +188,7 @@ implements OnInit {
       this.exampleDatabase.dataChange.value.splice(index, 1);
 
       this.refreshTable();
-      this.selection = new SelectionModel<Doctors>(true, []);
+      this.selection = new SelectionModel<Doctor>(true, []);
     });
     this.showNotification(
       "snackbar-danger",
@@ -199,7 +199,7 @@ implements OnInit {
   }
 
   public loadData() {
-    this.exampleDatabase = new DoctorsService(this.httpClient);
+    this.exampleDatabase = new DoctorService(this.httpClient);
     this.dataSource = new ExampleDataSource(
       this.exampleDatabase,
       this.paginator,
@@ -225,7 +225,7 @@ implements OnInit {
   }
 }
 
-export class ExampleDataSource extends DataSource<Doctors> {
+export class ExampleDataSource extends DataSource<Doctor> {
   filterChange = new BehaviorSubject("");
   get filter(): string {
     return this.filterChange.value;
@@ -233,10 +233,10 @@ export class ExampleDataSource extends DataSource<Doctors> {
   set filter(filter: string) {
     this.filterChange.next(filter);
   }
-  filteredData: Doctors[] = [];
-  renderedData: Doctors[] = [];
+  filteredData: Doctor[] = [];
+  renderedData: Doctor[] = [];
   constructor(
-    public exampleDatabase: DoctorsService,
+    public exampleDatabase: DoctorService,
     public paginator: MatPaginator,
     public _sort: MatSort
   ) {
@@ -245,7 +245,7 @@ export class ExampleDataSource extends DataSource<Doctors> {
     this.filterChange.subscribe(() => (this.paginator.pageIndex = 0));
   }
   /** Connect function called by the table to retrieve one stream containing the data to render. */
-  connect(): Observable<Doctors[]> {
+  connect(): Observable<Doctor[]> {
     // Listen for any changes in the base data, sorting, filtering, or pagination
     const displayDataChanges = [
       this.exampleDatabase.dataChange,
@@ -253,20 +253,21 @@ export class ExampleDataSource extends DataSource<Doctors> {
       this.filterChange,
       this.paginator.page,
     ];
-    this.exampleDatabase.getAllDoctorss();
+    this.exampleDatabase.getAllDoctors();
     return merge(...displayDataChanges).pipe(
       map(() => {
         // Filter data
         this.filteredData = this.exampleDatabase.data
           .slice()
-          .filter((doctors: Doctors) => {
+          .filter((doctor: Doctor) => {
             const searchStr = (
-              doctors.name +
-              doctors.department +
-              doctors.specialization +
-              doctors.degree +
-              doctors.email +
-              doctors.mobile
+              doctor.user?.first_name +
+              doctor.user?.last_name +
+              doctor.specialiste_name +
+              doctor.cabinet_name +
+              doctor.inp +
+              doctor.user?.email +
+              doctor.phone
             ).toLowerCase();
             return searchStr.indexOf(this.filter.toLowerCase()) !== -1;
           });
@@ -284,7 +285,7 @@ export class ExampleDataSource extends DataSource<Doctors> {
   }
   disconnect() {}
   /** Returns a sorted copy of the database data. */
-  sortData(data: Doctors[]): Doctors[] {
+  sortData(data: Doctor[]): Doctor[] {
     if (!this._sort.active || this._sort.direction === "") {
       return data;
     }
@@ -296,19 +297,19 @@ export class ExampleDataSource extends DataSource<Doctors> {
           [propertyA, propertyB] = [a.id, b.id];
           break;
         case "name":
-          [propertyA, propertyB] = [a.name, b.name];
+          [propertyA, propertyB] = [a.user?.first_name + ' ' + a.user?.last_name, b.user?.first_name + ' ' + b.user?.last_name];
           break;
         case "email":
-          [propertyA, propertyB] = [a.email, b.email];
+          [propertyA, propertyB] = [a.user?.email, b.user?.email];
           break;
         case "date":
-          [propertyA, propertyB] = [a.date, b.date];
+          [propertyA, propertyB] = [a.created_at, b.created_at];
           break;
-        case "time":
-          [propertyA, propertyB] = [a.department, b.department];
+        case "specialization":
+          [propertyA, propertyB] = [a.specialiste_name, b.specialiste_name];
           break;
-        case "mobile":
-          [propertyA, propertyB] = [a.mobile, b.mobile];
+        case "phone":
+          [propertyA, propertyB] = [a.phone, b.phone];
           break;
       }
       const valueA = isNaN(+propertyA) ? propertyA : +propertyA;

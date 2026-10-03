@@ -1,4 +1,4 @@
-import { Cabinets } from './../../cabinets.models';
+import { Cabinet } from './../../cabinet.model';
 import { CabinetsService } from './../../cabinets.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from "@angular/material/dialog";
 import { Component, Inject } from "@angular/core";
@@ -18,7 +18,7 @@ export class FormDialogComponent {
   action: string;
   dialogTitle: string;
   cabinetsForm: FormGroup;
-  cabinet: Cabinets;
+  cabinet: Cabinet;
 
   constructor(
     public dialogRef: MatDialogRef<FormDialogComponent>,
@@ -30,11 +30,18 @@ export class FormDialogComponent {
     // Set the defaults
     this.action = data.action;
     if (this.action === "edit") {
-      this.dialogTitle = data.cabinets.name;
-      this.cabinet = data.cabinets;
+      this.dialogTitle = data.cabinet.name;
+      this.cabinet = data.cabinet;
     } else {
       this.dialogTitle = "New Cabinet";
-      this.cabinet = new Cabinets({})
+      this.cabinet = {
+        id: null,
+        name: "",
+        number: "",
+        address: "",
+        created_at: "",
+        updated_at: "",
+      };
 
     }
     this.cabinetsForm = this.createContactForm();
@@ -66,9 +73,9 @@ export class FormDialogComponent {
   }
   public confirmAdd(): void {
     if (this.action === "edit") {
-      this.cabinetsService.updateCabinets(this.cabinetsForm.getRawValue());
+      this.cabinetsService.updateCabinet(this.cabinetsForm.getRawValue());
     } else {
-      this.cabinetsService.addCabinets(this.cabinetsForm.getRawValue());
+      this.cabinetsService.addCabinet(this.cabinetsForm.getRawValue());
 
     }
 

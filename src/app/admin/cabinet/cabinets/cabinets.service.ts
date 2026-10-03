@@ -1,34 +1,36 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject } from "rxjs";
-import { Cabinets } from "./cabinets.models";
-import { environment } from 'src/environments/environment';
+import { BehaviorSubject, Observable } from "rxjs";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { environment } from 'src/environments/environment';
 import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
+import { Cabinet, CabinetRequest, PaginatedCabinetList } from "./cabinet.model";
+
 @Injectable()
-export class CabinetsService extends UnsubscribeOnDestroyAdapter{
-  private readonly API_URL  =`${environment.restUrl}/cabinet/get`;// hna khassni n7et url dyali
-  private readonly API_URL_CREATE = `${environment.restUrl}/cabinet/create/`
-  private readonly API_URL_UPDATE = `${environment.restUrl}/cabinet/update/`
-  private readonly API_URL_DELETE = `${environment.restUrl}/cabinet/delete/`
+export class CabinetsService extends UnsubscribeOnDestroyAdapter {
+  private readonly API_URL = `${environment.restUrl}/api/cabinets/`;
+  
   isTblLoading = true;
-  dataChange: BehaviorSubject<Cabinets[]> = new BehaviorSubject<Cabinets[]>([]);
-  // Temporarily stores data from dialogs
+  dataChange: BehaviorSubject<Cabinet[]> = new BehaviorSubject<Cabinet[]>([]);
   dialogData: any;
+
   constructor(private httpClient: HttpClient) {
     super();
   }
-  get data(): Cabinets[] {
+
+  get data(): Cabinet[] {
     return this.dataChange.value;
   }
+
   getDialogData() {
     return this.dialogData;
   }
+
   /** CRUD METHODS */
   getAllCabinets(): void {
-    this.subs.sink = this.httpClient.get<Cabinets[]>(this.API_URL).subscribe(
+    this.subs.sink = this.httpClient.get<PaginatedCabinetList>(this.API_URL).subscribe(
       (data) => {
         this.isTblLoading = false;
-        this.dataChange.next(data);
+        this.dataChange.next(data.results);
       },
       (error: HttpErrorResponse) => {
         this.isTblLoading = false;
@@ -36,36 +38,22 @@ export class CabinetsService extends UnsubscribeOnDestroyAdapter{
       }
     );
   }
-  addCabinets(cabinets: Cabinets): void {
-    this.dialogData = cabinets;
 
-     this.httpClient.post(this.API_URL_CREATE, cabinets).subscribe(data => {
-      this.dialogData = cabinets;
-      },
-      (err: HttpErrorResponse) => {
-     // error code here
-    });
+  addCabinet(cabinet: CabinetRequest): Observable<any> {
+    this.dialogData = cabinet;
+    return this.httpClient.post(this.API_URL, cabinet);
   }
-  updateCabinets(cabinets: Cabinets): void {
-    this.dialogData = cabinets;
 
-     this.httpClient.put(this.API_URL_UPDATE + cabinets.id, cabinets).subscribe(data => {
-      this.dialogData = cabinets;
-    },
-    (err: HttpErrorResponse) => {
-      // error code here
-    }
-  );
+  updateCabinet(cabinet: CabinetRequest & { id: number }): Observable<any> {
+    this.dialogData = cabinet;
+    return this.httpClient.put(`${this.API_URL}${cabinet.id}/`, cabinet);
   }
-  deleteCabinets(id: number): void {
-    console.log(id);
 
-    this.httpClient.delete(this.API_URL_DELETE + id).subscribe(data => {
-      console.log(id);
-      },
-      (err: HttpErrorResponse) => {
-         // error code here
-      }
-    );
+  deleteCabinet(id: number): Observable<any> {
+    return this.httpClient.delete(`${this.API_URL}${id}/`);
+  }
+
+  getCabinet(id: number): Observable<Cabinet> {
+    return this.httpClient.get<Cabinet>(`${this.API_URL}${id}/`);
   }
 }
