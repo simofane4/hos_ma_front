@@ -9,13 +9,13 @@
         "DASHBOARD1": "Tableau de Bord 1",
         "DASHBOARD2": "Tableau de Bord 2",
         "DOCTOR-DASHBOARD": "Tableau du Médecin",
-        "PATIENT-DASHBOARD": "Tableau du Patient"
+        "PATIENT-DASHBOARD": "Tableau du Patient",
+        "ASSISTANT-DASHBOARD": "Tableau de bord Assistant"
       }
     },
     "CABINET": {
       "TEXT": "Cabinet"
     },
-    
     "APPOINTMENTS": {
       "TEXT": "Rendez-vous",
       "LIST": {
@@ -103,6 +103,43 @@
     },
     "CONTACTS": {
       "TEXT": "Contacts"
-    }
+    },
+    "CABINETS": {
+      "TEXT": "Cabinets"
+    },
+    "SPECIALITES": {
+      "TEXT": "Spécialités"
+    },
+    "ASSISTANTS": {
+      "TEXT": "Assistants"
+    },
+    "USERS": {
+      "TEXT": "Utilisateurs"
+    },
+    "PATIENTFILES": {
+      "TEXT": "Fichiers patients"
+    },
+    "ACTESDEMANDES": {
+      "TEXT": "Actes demandés"
+    },
+    "ACTESFAITS": {
+      "TEXT": "Actes faits"
+    },
+    "MEDICAMENTS": {
+      "TEXT": "Médicaments"
+    },
+    "ORDONNANCES": {
+      "TEXT": "Ordonnances"
+    },
+    "INVOICES": {
+      "TEXT": "Factures"
+    },
+    "ME": {
+      "TEXT": "Mon compte"
+    },
+    "LOGOUT": {
+      "TEXT": "Déconnexion"
+    },
+    "COMINGSOON": "Bientôt disponible"
   }
 }

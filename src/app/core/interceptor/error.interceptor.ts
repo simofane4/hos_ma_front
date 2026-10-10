@@ -33,15 +33,12 @@ export class ErrorInterceptor implements HttpInterceptor {
             })
             .pipe(
               switchMap((res: any) => {
-                currentUser.token = res.access;
-                localStorage.setItem(
-                  'currentUser',
-                  JSON.stringify(currentUser)
-                );
+                this.refresh = false;
+                this.authenticationService.setTokens(res.access, res.refresh);
                 return next.handle(
                   request.clone({
                     setHeaders: {
-                      Authorization: `Bearer ${currentUser.token}`,
+                      Authorization: `Bearer ${res.access}`,
                     },
                   })
                 );

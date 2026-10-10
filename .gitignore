@@ -51,3 +51,12 @@ yarn-error.log*
 **/.DS_Store
 .DS_Store
 .angular/
+
+# Local tooling / secrets
+opencode.jsonc
+telegram-echo-bot.js
+
+# Backend code must not live in the frontend repo
+cabinets/
+__pycache__/
+*.pyc

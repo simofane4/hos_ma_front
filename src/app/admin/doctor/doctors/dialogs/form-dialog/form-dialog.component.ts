@@ -7,6 +7,9 @@ import {
   FormGroup,
   FormBuilder,
 } from "@angular/forms";
+import { MatSnackBar } from "@angular/material/snack-bar";
+import { HttpErrorResponse } from "@angular/common/http";
+import { apiErrorMessage } from "src/app/core/api-error";
 import { Doctor, DoctorClass } from "./../../doctor.model";
 import { formatDate } from "@angular/common";
 @Component({
@@ -19,11 +22,13 @@ export class FormDialogComponent {
   dialogTitle: string;
   doctorForm: FormGroup;
   doctor: Doctor;
+  loading = false;
   constructor(
     public dialogRef: MatDialogRef<FormDialogComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
     public doctorService: DoctorService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private snackBar: MatSnackBar
   ) {
     // Set the defaults
     this.action = data.action;
@@ -70,6 +75,29 @@ export class FormDialogComponent {
     this.dialogRef.close();
   }
   public confirmAdd(): void {
-    this.doctorService.addDoctor(this.doctorForm.getRawValue());
+    if (this.doctorForm.invalid || this.loading) {
+      return;
+    }
+    this.loading = true;
+
+    const value = this.doctorForm.getRawValue();
+    const request =
+      this.action === "edit"
+        ? this.doctorService.updateDoctor(value)
+        : this.doctorService.addDoctor(value);
+
+    request.subscribe(
+      () => {
+        this.loading = false;
+        this.dialogRef.close(1);
+      },
+      (error: HttpErrorResponse) => {
+        this.loading = false;
+        this.snackBar.open(apiErrorMessage(error), "Close", {
+          duration: 6000,
+          panelClass: "snackbar-danger",
+        });
+      }
+    );
   }
 }

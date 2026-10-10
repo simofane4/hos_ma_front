@@ -3,6 +3,7 @@ import { BehaviorSubject, Observable } from "rxjs";
 import { HttpClient, HttpErrorResponse } from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
+import { apiErrorMessage } from "src/app/core/api-error";
 import { Cabinet, CabinetRequest, PaginatedCabinetList } from "./cabinet.model";
 
 @Injectable()
@@ -26,17 +27,22 @@ export class CabinetsService extends UnsubscribeOnDestroyAdapter {
   }
 
   /** CRUD METHODS */
-  getAllCabinets(): void {
-    this.subs.sink = this.httpClient.get<PaginatedCabinetList>(this.API_URL).subscribe(
-      (data) => {
-        this.isTblLoading = false;
-        this.dataChange.next(data.results);
-      },
-      (error: HttpErrorResponse) => {
-        this.isTblLoading = false;
-        console.log(error.name + " " + error.message);
-      }
-    );
+  getAllCabinets(search?: string): void {
+    this.isTblLoading = true;
+    this.subs.sink = this.httpClient
+      .get<PaginatedCabinetList>(this.API_URL, {
+        params: search ? { search } : {},
+      })
+      .subscribe(
+        (data) => {
+          this.isTblLoading = false;
+          this.dataChange.next(data.results);
+        },
+        (error: HttpErrorResponse) => {
+          this.isTblLoading = false;
+          console.log(apiErrorMessage(error));
+        }
+      );
   }
 
   addCabinet(cabinet: CabinetRequest): Observable<any> {
@@ -44,9 +50,12 @@ export class CabinetsService extends UnsubscribeOnDestroyAdapter {
     return this.httpClient.post(this.API_URL, cabinet);
   }
 
-  updateCabinet(cabinet: CabinetRequest & { id: number }): Observable<any> {
-    this.dialogData = cabinet;
-    return this.httpClient.put(`${this.API_URL}${cabinet.id}/`, cabinet);
+  updateCabinet(
+    cabinet: Partial<CabinetRequest> & { id: number }
+  ): Observable<any> {
+    const { id, ...payload } = cabinet;
+    this.dialogData = { ...payload, id };
+    return this.httpClient.patch(`${this.API_URL}${id}/`, payload);
   }
 
   deleteCabinet(id: number): Observable<any> {

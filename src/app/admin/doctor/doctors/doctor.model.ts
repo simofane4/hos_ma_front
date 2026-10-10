@@ -30,7 +30,8 @@ export interface DoctorCreateRequest {
   first_name: string;
   last_name: string;
   cabinet: number;
-  img?: File;
+  /** Optional upload; a File switches the request to multipart/form-data. */
+  img?: File | string | null;
   inp: string;
   gender: 'Female' | 'Male';
   phone: string;
@@ -43,7 +44,7 @@ export interface DoctorUpdateRequest {
   first_name?: string;
   last_name?: string;
   cabinet?: number;
-  img?: File;
+  img?: File | string | null;
   inp?: string;
   gender?: 'Female' | 'Male';
   phone?: string;

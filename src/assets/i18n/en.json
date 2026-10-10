@@ -9,7 +9,8 @@
         "DASHBOARD1": "Dashboard 1",
         "DASHBOARD2": "Dashboard 2",
         "DOCTOR-DASHBOARD": "Doctor Dashboard",
-        "PATIENT-DASHBOARD": "Patient Dashboard"
+        "PATIENT-DASHBOARD": "Patient Dashboard",
+        "ASSISTANT-DASHBOARD": "Assistant Dashboard"
       }
     },
     "CABINET": {
@@ -66,15 +67,15 @@
         "INVOICE": "Invoice"
       }
     },
-    "DOCTOR": {    
-        "DASHBOARD": "Dashboard",
-        "APPOINTMENTS": "Appointments",
-        "DOCTORS": "Doctors",
-        "PATIENTS": "Patients",
-        "SETTINGS": "Settings",
-        "CHAT": "Chat"
+    "DOCTOR": {
+      "DASHBOARD": "Dashboard",
+      "APPOINTMENTS": "Appointments",
+      "DOCTORS": "Doctors",
+      "PATIENTS": "Patients",
+      "SETTINGS": "Settings",
+      "CHAT": "Chat"
     },
-    "PATIENT": {    
+    "PATIENT": {
       "TEXT": "Patient",
       "DASHBOARD": "Dashboard",
       "APPOINTMENTS": {
@@ -102,6 +103,43 @@
     },
     "CONTACTS": {
       "TEXT": "Contacts"
-    }
+    },
+    "CABINETS": {
+      "TEXT": "Clinics"
+    },
+    "SPECIALITES": {
+      "TEXT": "Specialities"
+    },
+    "ASSISTANTS": {
+      "TEXT": "Assistants"
+    },
+    "USERS": {
+      "TEXT": "Users"
+    },
+    "PATIENTFILES": {
+      "TEXT": "Patient Files"
+    },
+    "ACTESDEMANDES": {
+      "TEXT": "Requested Acts"
+    },
+    "ACTESFAITS": {
+      "TEXT": "Completed Acts"
+    },
+    "MEDICAMENTS": {
+      "TEXT": "Medicines"
+    },
+    "ORDONNANCES": {
+      "TEXT": "Prescriptions"
+    },
+    "INVOICES": {
+      "TEXT": "Invoices"
+    },
+    "ME": {
+      "TEXT": "My Account"
+    },
+    "LOGOUT": {
+      "TEXT": "Logout"
+    },
+    "COMINGSOON": "Not available yet"
   }
 }

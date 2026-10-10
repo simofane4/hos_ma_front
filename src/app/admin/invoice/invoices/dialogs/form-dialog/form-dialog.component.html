@@ -1,0 +1,96 @@
+<div class="addContainer">
+  <div class="modalHeader">
+    <div class="editRowModal">
+      <div class="modalHeader clearfix">
+        <div class="modal-about">
+          <div class="font-weight-bold p-t-5 msl-3 font-17">
+            {{ dialogTitle }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <form class="register-form m-4" [formGroup]="form" (ngSubmit)="confirmAdd()">
+      <!-- Picking a patient narrows the appointments that can be billed. -->
+      <div class="row" *ngIf="action === 'add'">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Patient</mat-label>
+            <input matInput formControlName="patientLabel" [matAutocomplete]="auto"
+              (input)="onPatientSearch($any($event.target).value)">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-hint>Start typing to load their appointments</mat-hint>
+          </mat-form-field>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onPatientSelected($event.option.value)">
+            <mat-option *ngFor="let patient of patients" [value]="patient">
+              {{ patient.firstname }} {{ patient.lastname }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Appointment</mat-label>
+            <mat-select formControlName="appointment" required>
+              <mat-option *ngFor="let appointment of appointments" [value]="appointment.id">
+                {{ appointmentLabel(appointment) }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>event</mat-icon>
+            <mat-error *ngIf="form.get('appointment').hasError('required')">
+              Appointment is required
+            </mat-error>
+            <mat-hint *ngIf="!appointments.length">
+              Pick a patient first, or none of their appointments are listed
+            </mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Date</mat-label>
+            <input matInput type="date" formControlName="date" required>
+            <mat-icon matSuffix>calendar_today</mat-icon>
+            <mat-error *ngIf="form.get('date').hasError('required')">Date is required</mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Amount</mat-label>
+            <input matInput type="number" step="0.01" formControlName="amount" required>
+            <mat-icon matSuffix>payments</mat-icon>
+            <mat-error *ngIf="form.get('amount').hasError('required')">Amount is required</mat-error>
+            <mat-error *ngIf="form.get('amount').hasError('pattern')">
+              Up to two decimals, no thousands separator
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-checkbox formControlName="payed">This invoice has been paid</mat-checkbox>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <div class="example-button-row">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid || loading">
+              {{ action === 'edit' ? 'Update' : 'Save' }}
+            </button>
+            <button mat-raised-button color="warn" (click)="onNoClick()" tabindex="-1">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

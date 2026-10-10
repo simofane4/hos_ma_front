@@ -1,0 +1,89 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Dashboard'" [items]="['Dashboard']" [active_item]="'Dashboard'">
+      </app-breadcrumb>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+          <div class="body">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h2 class="mb-0"><strong>Today</strong></h2>
+              <span class="muted">{{ today }} &middot; {{ cabinetLabel() }}</span>
+            </div>
+
+            <div class="row">
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <a class="stat-card" routerLink="/assistant/appointments">
+                  <span class="stat-value">{{ display(todayAppointmentCount) }}</span>
+                  <span class="stat-label">Appointments today</span>
+                </a>
+              </div>
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <a class="stat-card" routerLink="/assistant/patients">
+                  <span class="stat-value">{{ display(patientCount) }}</span>
+                  <span class="stat-label">Patients</span>
+                </a>
+              </div>
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <a class="stat-card" routerLink="/assistant/invoices">
+                  <span class="stat-value">{{ display(unpaidInvoiceCount) }}</span>
+                  <span class="stat-label">Unpaid invoices</span>
+                </a>
+              </div>
+              <div class="col-xl-3 col-lg-6 col-md-6 col-sm-12">
+                <a class="stat-card" routerLink="/assistant/actes-demandes">
+                  <span class="stat-value">{{ display(requestedActCount) }}</span>
+                  <span class="stat-label">Requested acts</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+          <div class="body">
+            <h2><strong>Today's appointments</strong></h2>
+            <div class="table-responsive">
+              <table class="table align-middle mb-0">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Patient</th>
+                    <th>Description</th>
+                    <th class="text-right">Paid</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr *ngFor="let row of todayAppointments; trackBy: trackById">
+                    <td>{{ row.start }} - {{ row.end }}</td>
+                    <td>{{ row.patient_name }}</td>
+                    <td>{{ row.description || '-' }}</td>
+                    <td class="text-right">
+                      <span class="badge" [ngClass]="row.payed ? 'badge-success' : 'badge-warning'">
+                        {{ row.payed ? 'Yes' : 'No' }}
+                      </span>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div *ngIf="loading" class="tbl-spinner">
+                <mat-progress-spinner color="primary" [diameter]="40" mode="indeterminate"></mat-progress-spinner>
+              </div>
+              <div *ngIf="!loading && !todayAppointments.length" class="no-results">
+                No appointments scheduled for today.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

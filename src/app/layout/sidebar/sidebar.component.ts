@@ -10,6 +10,7 @@ import {
   OnDestroy,
 } from "@angular/core";
 import { ROUTES } from "./sidebar-items";
+import { RouteInfo } from "./sidebar.metadata";
 import { AuthService } from "src/app/core/service/auth.service";
 import { Role } from "src/app/core/models/role";
 @Component({
@@ -18,7 +19,7 @@ import { Role } from "src/app/core/models/role";
   styleUrls: ["./sidebar.component.sass"],
 })
 export class SidebarComponent implements OnInit, OnDestroy {
-  public sidebarItems: any[];
+  public sidebarItems: RouteInfo[] = [];
   level1Menu = "";
   level2Menu = "";
   level3Menu = "";
@@ -43,7 +44,7 @@ export class SidebarComponent implements OnInit, OnDestroy {
     this.routerObj = this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
         // logic for select active menu in dropdown
-        const role = ["admin", "doctor", "patient"];
+        const role = ["admin", "doctor", "assistant", "patient"];
         const currenturl = event.url.split("?")[0];
         const firstString = currenturl.split("/").slice(1)[0];
 
@@ -70,6 +71,14 @@ export class SidebarComponent implements OnInit, OnDestroy {
     if (!this.elementRef.nativeElement.contains(event.target)) {
       this.renderer.removeClass(this.document.body, "overlay-open");
     }
+  }
+  onItemClick(event: any, item: RouteInfo) {
+    if (item.disabled) {
+      event.preventDefault();
+      event.stopPropagation();
+      return;
+    }
+    this.callLevel1Toggle(event, item.moduleName);
   }
   callLevel1Toggle(event: any, element: any) {
     if (element === this.level1Menu) {
@@ -99,29 +108,18 @@ export class SidebarComponent implements OnInit, OnDestroy {
     }
   }
   ngOnInit() {
-    if (this.authService.currentUserValue) {
-      const userRole = this.authService.currentUserValue.role;
-      this.userFullName =
-        this.authService.currentUserValue.firstName +
-        " " +
-        this.authService.currentUserValue.lastName;
-      this.userImg =  'assets/images/user/patient.jpg'; //this.authService.currentUserValue.img;
+    const currentUser = this.authService.currentUserValue;
+    if (currentUser) {
+      const userRole = currentUser.role;
+      this.userFullName = currentUser.firstName + " " + currentUser.lastName;
+      this.userImg = 'assets/images/user/patient.jpg'; //currentUser.img;
+      this.userType = userRole;
 
       this.sidebarItems = ROUTES.filter(
-        (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf("All") !== -1
+        (x) => x.role.indexOf(userRole) !== -1 || x.role.indexOf(Role.All) !== -1
       );
-      if (userRole === Role.Admin) {
-        this.userType = Role.Admin;
-      } else if (userRole === Role.Patient) {
-        this.userType = Role.Patient;
-      } else if (userRole === Role.Doctor) {
-        this.userType = Role.Doctor;
-      } else {
-        this.userType = Role.Admin;
-      }
     }
 
-    // this.sidebarItems = ROUTES.filter((sidebarItem) => sidebarItem);
     this.initLeftSidebar();
     this.bodyTag = this.document.body;
   }

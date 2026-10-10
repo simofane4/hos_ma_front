@@ -1,56 +1,44 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { environment } from 'src/environments/environment';
-import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
-import { Invoice, InvoiceRequest, PaginatedInvoiceList } from "./invoice.model";
+import { Observable } from "rxjs";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { environment } from "src/environments/environment";
+import {
+  Invoice,
+  InvoiceFilters,
+  InvoiceRequest,
+  InvoiceUpdateRequest,
+  PaginatedInvoiceList,
+} from "./invoice.model";
 
 @Injectable()
-export class InvoiceService extends UnsubscribeOnDestroyAdapter {
+export class InvoiceService {
   private readonly API_URL = `${environment.restUrl}/api/invoices/`;
-  
-  isTblLoading = true;
-  dataChange: BehaviorSubject<Invoice[]> = new BehaviorSubject<Invoice[]>([]);
-  dialogData: any;
 
-  constructor(private httpClient: HttpClient) {
-    super();
-  }
+  constructor(private httpClient: HttpClient) {}
 
-  get data(): Invoice[] {
-    return this.dataChange.value;
-  }
-
-  getDialogData() {
-    return this.dialogData;
-  }
-
-  /** CRUD METHODS */
-  getAllInvoices(params?: any): void {
-    this.subs.sink = this.httpClient.get<PaginatedInvoiceList>(this.API_URL, { params }).subscribe(
-      (data) => {
-        this.isTblLoading = false;
-        this.dataChange.next(data.results);
-      },
-      (error: HttpErrorResponse) => {
-        this.isTblLoading = false;
-        console.log(error.name + " " + error.message);
-      }
-    );
-  }
-
-  getUnpaidInvoices(): Observable<Invoice> {
-    return this.httpClient.get<Invoice>(`${this.API_URL}unpaid/`);
+  /**
+   * One page of invoices, filtered and sorted by the server.
+   *
+   * Pass `unpaidOnly` to hit `/invoices/unpaid/` instead, the endpoint's own
+   * collection route for outstanding bills.
+   */
+  getPage(
+    filters: InvoiceFilters = {},
+    unpaidOnly = false
+  ): Observable<PaginatedInvoiceList> {
+    const url = unpaidOnly ? `${this.API_URL}unpaid/` : this.API_URL;
+    return this.httpClient.get<PaginatedInvoiceList>(url, {
+      params: this.toParams(filters),
+    });
   }
 
   addInvoice(invoice: InvoiceRequest): Observable<any> {
-    this.dialogData = invoice;
     return this.httpClient.post(this.API_URL, invoice);
   }
 
-  updateInvoice(invoice: InvoiceRequest & { id: number }): Observable<any> {
-    this.dialogData = invoice;
-    return this.httpClient.put(`${this.API_URL}${invoice.id}/`, invoice);
+  updateInvoice(invoice: InvoiceUpdateRequest & { id: number }): Observable<any> {
+    const { id, ...payload } = invoice;
+    return this.httpClient.patch(`${this.API_URL}${id}/`, payload);
   }
 
   deleteInvoice(id: number): Observable<any> {
@@ -59,5 +47,16 @@ export class InvoiceService extends UnsubscribeOnDestroyAdapter {
 
   getInvoice(id: number): Observable<Invoice> {
     return this.httpClient.get<Invoice>(`${this.API_URL}${id}/`);
+  }
+
+  private toParams(filters: InvoiceFilters): HttpParams {
+    let params = new HttpParams();
+    Object.keys(filters).forEach((key) => {
+      const value = filters[key];
+      if (value !== undefined && value !== null && value !== "") {
+        params = params.set(key, String(value));
+      }
+    });
+    return params;
   }
 }

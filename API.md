@@ -469,6 +469,84 @@ curl -X DELETE http://localhost:8000/api/patients/10/ \
 
 ---
 
+## Patient File Endpoints
+
+Documents attached to a patient. A file inherits its cabinet from the patient, so
+there is no cabinet to send.
+
+### GET /api/patient-files/
+
+List documents, scoped to the caller's cabinet (admins see every cabinet).
+
+**Query Parameters:**
+- `page={int}` - Page number
+- `page_size={int}` - Items per page (max 200)
+- `search={string}` - Matches the patient's names or the stored file name
+- `patient={id}` - Filter to one patient
+- `ordering={field}` - Only `uploaded_at` is orderable; prefix `-` to reverse
+
+**Response (200 OK):**
+```json
+{
+  "count": 2,
+  "next": null,
+  "previous": null,
+  "results": [
+    {
+      "id": 16,
+      "patient": 751,
+      "patient_name": "Patient Test",
+      "file": "http://localhost:8000/media/patient_documents/report.pdf",
+      "uploaded_at": "2026-10-03T14:55:59+0000",
+      "uploaded_by": null,
+      "download_url": "http://localhost:8000/media/patient_documents/report.pdf"
+    }
+  ]
+}
+```
+
+`patient_name` and `download_url` are read-only and resolved server side.
+`uploaded_by` is always `null`: the uploader is not persisted, and the field is
+kept only so the response shape stays stable.
+
+### POST /api/patient-files/
+
+Upload a document. **This endpoint only reads multipart or form-encoded bodies**,
+so the payload must not be sent as JSON.
+
+**Request:**
+```bash
+curl -X POST http://localhost:8000/api/patient-files/ \
+  -H "Authorization: Bearer <token>" \
+  -F "patient=751" \
+  -F "file=@report.pdf"
+```
+
+**Constraints:**
+- `file` is required and at most **5 MB** (`Le fichier depasse la taille maximale de 5 Mo.`)
+- `patient` must belong to the caller's cabinet
+- Staff omit the cabinet: it is forced from the token
+
+**Response (201 Created):** the created object, as listed above.
+
+**Errors:** `400` for an oversized file or a patient in another cabinet.
+
+### PATCH /api/patient-files/{id}/
+
+Replace the stored file of an existing row. Multipart, same `file` field. The
+patient cannot be reassigned, so the cabinet a document lives in cannot change.
+
+### DELETE /api/patient-files/{id}/
+
+Delete the row and its stored file.
+
+**Response (204 No Content):**
+```
+(empty)
+```
+
+---
+
 ## Appointment Endpoints
 
 ### GET /api/appointments/
@@ -476,15 +554,22 @@ curl -X DELETE http://localhost:8000/api/patients/10/ \
 List appointments for current user's cabinet.
 
 **Query Parameters:**
-- `start_date={YYYY-MM-DD}` - Filter by start date or later
-- `end_date={YYYY-MM-DD}` - Filter by end date or earlier
-- `doctor={id}` - Filter by doctor
+- `date={YYYY-MM-DD}` - Filter by exact date
+- `date_from={YYYY-MM-DD}` - Filter by date or later
+- `date_to={YYYY-MM-DD}` - Filter by date or earlier
+- `cabinet={id}` - Filter by cabinet (admins only; staff are scoped to their own)
 - `patient={id}` - Filter by patient
+- `payed={true|false}` - Filter by payment status
+- `search={string}` - Matches the patient's names or the description
+- `ordering={field}` - Sortable by `date`, `start`, `created_at`; prefix `-` to reverse
 - `page={n}` - Pagination
+
+Unknown query parameters are ignored rather than rejected, so a misspelled filter
+returns the unfiltered list instead of an error.
 
 **Request:**
 ```bash
-curl "http://localhost:8000/api/appointments/?start_date=2026-10-15" \
+curl "http://localhost:8000/api/appointments/?date_from=2026-10-15" \
   -H "Authorization: Bearer <token>"
 ```
 
@@ -556,24 +641,10 @@ curl -X POST http://localhost:8000/api/appointments/ \
 
 ---
 
-### POST /api/appointments/{id}/cancel/
-
-Cancel an appointment.
-
-**Request:**
-```bash
-curl -X POST http://localhost:8000/api/appointments/2/cancel/ \
-  -H "Authorization: Bearer <token>"
-```
-
-**Response (200 OK or 204 No Content):**
-```json
-{
-  "id": 2,
-  "status": "cancelled",
-  ...
-}
-```
+> **Not implemented:** there is no `POST /api/appointments/{id}/cancel/` endpoint.
+> `AppointmentViewSet` has no extra `@action`, so the route 404s. Removing an
+> appointment is a plain `DELETE /api/appointments/{id}/`. Do not call a cancel
+> action from the UI until the backend grows one.
 
 ---
 

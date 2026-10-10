@@ -21,8 +21,10 @@
         <li [class.active]="level1Menu === sidebarItem.moduleName && sidebarItem.submenu.length != 0"
           *ngFor="let sidebarItem of sidebarItems" [routerLinkActive]="sidebarItem.submenu.length != 0 ? '' : 'active'">
           <div class="header" *ngIf="sidebarItem.groupTitle === true">{{sidebarItem.title | translate}}</div>
-          <a [routerLink]="sidebarItem.class === '' ? [sidebarItem.path] : null" *ngIf="!sidebarItem.groupTitle;"
-            [ngClass]="[sidebarItem.class]" (click)="callLevel1Toggle($event, sidebarItem.moduleName)" class="menu-top">
+          <a *ngIf="!sidebarItem.groupTitle"
+            [routerLink]="sidebarItem.disabled || sidebarItem.class !== '' ? null : [sidebarItem.path]"
+            [ngClass]="[sidebarItem.class]" [class.nav-item-disabled]="sidebarItem.disabled"
+            [attr.aria-disabled]="sidebarItem.disabled" [attr.title]="sidebarItem.disabled ? ('MENUITEMS.COMINGSOON' | translate) : null" (click)="onItemClick($event, sidebarItem)" class="menu-top">
             <i [ngClass]="[sidebarItem.iconType]">{{sidebarItem.icon}}</i>
             <span class="hide-menu">{{sidebarItem.title | translate}}
             </span>
@@ -55,7 +57,7 @@
         <li>
           <a class="" (click)="logout()" class="menu-top">
             <i class="material-icons-two-tone">power_settings_new</i>
-            <span class="hide-menu">Logout
+            <span class="hide-menu">{{ 'MENUITEMS.LOGOUT.TEXT' | translate }}
             </span>
           </a>
         </li>

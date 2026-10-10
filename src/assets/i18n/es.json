@@ -9,7 +9,8 @@
         "DASHBOARD1": "Tablero 1",
         "DASHBOARD2": "Tablero 2",
         "DOCTOR-DASHBOARD": "Tablero médico",
-        "PATIENT-DASHBOARD": "Tablero Paciente"
+        "PATIENT-DASHBOARD": "Tablero Paciente",
+        "ASSISTANT-DASHBOARD": "Panel del asistente"
       }
     },
     "CABINET": {
@@ -66,15 +67,15 @@
         "INVOICE": "Factura"
       }
     },
-    "DOCTOR": {    
-        "DASHBOARD": "Tablero",
-        "APPOINTMENTS": "Equipo",
-        "DOCTORS": "Doctoras",
-        "PATIENTS": "Pacientes",
-        "SETTINGS": "Configuraciones",
-        "CHAT": "Charla"
+    "DOCTOR": {
+      "DASHBOARD": "Tablero",
+      "APPOINTMENTS": "Equipo",
+      "DOCTORS": "Doctoras",
+      "PATIENTS": "Pacientes",
+      "SETTINGS": "Configuraciones",
+      "CHAT": "Charla"
     },
-    "PATIENT": {    
+    "PATIENT": {
       "TEXT": "Paciente",
       "DASHBOARD": "Tablero",
       "APPOINTMENTS": {
@@ -102,6 +103,43 @@
     },
     "CONTACTS": {
       "TEXT": "Contactos"
-    }
+    },
+    "CABINETS": {
+      "TEXT": "Consultorios"
+    },
+    "SPECIALITES": {
+      "TEXT": "Especialidades"
+    },
+    "ASSISTANTS": {
+      "TEXT": "Asistentes"
+    },
+    "USERS": {
+      "TEXT": "Usuarios"
+    },
+    "PATIENTFILES": {
+      "TEXT": "Expedientes de pacientes"
+    },
+    "ACTESDEMANDES": {
+      "TEXT": "Actos solicitados"
+    },
+    "ACTESFAITS": {
+      "TEXT": "Actos realizados"
+    },
+    "MEDICAMENTS": {
+      "TEXT": "Medicamentos"
+    },
+    "ORDONNANCES": {
+      "TEXT": "Recetas"
+    },
+    "INVOICES": {
+      "TEXT": "Facturas"
+    },
+    "ME": {
+      "TEXT": "Mi cuenta"
+    },
+    "LOGOUT": {
+      "TEXT": "Cerrar sesión"
+    },
+    "COMINGSOON": "Aún no disponible"
   }
 }

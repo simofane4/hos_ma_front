@@ -1,0 +1,19 @@
+services:
+  - type: static
+    name: hos-ma-front
+    runtime: node
+    buildCommand: npm ci && npm run build
+    # `outputPath` from angular.json, not the package name.
+    staticPublishPath: ./dist/main
+    envVars:
+      # Angular 13 predates Render's current default images. Pinned to the exact
+      # version the production build was verified against locally (node v24.14.0).
+      # If Render has no image for it, drop this and let it use the default.
+      - key: NODE_VERSION
+        value: 24.14.0
+    # Without this every deep link (/admin/patients, /doctor/invoices, ...) is a
+    # 404 on refresh, because the static host looks for a real file per path.
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

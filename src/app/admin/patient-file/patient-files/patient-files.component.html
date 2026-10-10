@@ -1,0 +1,119 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Patient Documents'" [items]="['Patient Documents']" [active_item]="'Patient Documents'">
+      </app-breadcrumb>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+          <div class="body">
+            <div class="table-responsive">
+              <div class="materialTableHeader">
+                <div class="row">
+                  <div class="col-8">
+                    <ul class="header-buttons-left ms-0">
+                      <li class="dropdown">
+                        <h2>
+                          <strong>Patient Documents</strong>
+                        </h2>
+                      </li>
+                      <li class="dropdown m-l-20">
+                        <label for="search-input"><i class="material-icons search-icon">search</i></label>
+                        <input placeholder="Search patient or file name" type="text" #filter
+                          class="browser-default search-field" aria-label="Search box">
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-4">
+                    <ul class="header-buttons">
+                      <li>
+                        <div class="icon-button-demo">
+                          <button mat-mini-fab color="primary" (click)="addNew()" aria-label="Upload document">
+                            <mat-icon class="col-white">add</mat-icon>
+                          </button>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="icon-button-demo">
+                          <button mat-mini-fab color="primary" (click)="refresh()" aria-label="Refresh">
+                            <mat-icon class="col-white">refresh</mat-icon>
+                          </button>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <mat-table #table [dataSource]="dataSource" matSort class="mat-cell">
+                <!-- Id Column -->
+                <ng-container matColumnDef="id">
+                  <mat-header-cell *matHeaderCellDef>#</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.id }}</mat-cell>
+                </ng-container>
+                <!-- Patient Column -->
+                <ng-container matColumnDef="patient">
+                  <mat-header-cell *matHeaderCellDef>Patient</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ patientLabel(row) }}</mat-cell>
+                </ng-container>
+                <!-- File Column -->
+                <ng-container matColumnDef="file">
+                  <mat-header-cell *matHeaderCellDef>Document</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <a [href]="row.download_url" target="_blank" rel="noopener" class="file-link">
+                      <mat-icon>attach_file</mat-icon>
+                      {{ fileName(row) }}
+                    </a>
+                  </mat-cell>
+                </ng-container>
+                <!-- Uploaded Column -->
+                <ng-container matColumnDef="uploaded_at">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Uploaded</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.uploaded_at | date: 'MM/dd/yyyy HH:mm' }}</mat-cell>
+                </ng-container>
+                <!-- Actions -->
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell class="pr-0" *matHeaderCellDef>Actions</mat-header-cell>
+                  <mat-cell *matCellDef="let row" class="pr-0">
+                    <a mat-icon-button [href]="row.download_url" target="_blank" rel="noopener"
+                      class="tbl-action-btn" aria-label="Download document">
+                      <app-feather-icons [icon]="'download'" [class]="'tbl-fav-edit'"></app-feather-icons>
+                    </a>
+                    <button mat-icon-button (click)="$event.stopPropagation(); replaceFile(row)" class="tbl-action-btn"
+                      aria-label="Replace document">
+                      <app-feather-icons [icon]="'refresh-cw'" [class]="'tbl-fav-edit'"></app-feather-icons>
+                    </button>
+                    <button mat-icon-button (click)="$event.stopPropagation(); deleteItem(row)" class="tbl-action-btn"
+                      aria-label="Delete document">
+                      <app-feather-icons [icon]="'trash-2'" [class]="'tbl-fav-delete'"></app-feather-icons>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" [style.cursor]="'default'" matRipple>
+                </mat-row>
+              </mat-table>
+
+              <!-- Loading spinner -->
+              <div *ngIf="dataSource.loading" class="tbl-spinner">
+                <mat-progress-spinner color="primary" [diameter]="40" mode="indeterminate">
+                </mat-progress-spinner>
+              </div>
+              <div *ngIf="!dataSource.loading && dataSource.failed" class="no-results">
+                Could not load documents. Check your connection and try again.
+              </div>
+              <div *ngIf="!dataSource.loading && !dataSource.failed && dataSource.total === 0" class="no-results">
+                No results
+              </div>
+
+              <mat-paginator #paginator [length]="dataSource.total" [pageIndex]="0" [pageSize]="10"
+                [pageSizeOptions]="[10, 25, 50, 100]">
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

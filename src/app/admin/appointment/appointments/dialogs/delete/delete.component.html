@@ -1,0 +1,29 @@
+<div class="container">
+  <h3 mat-dialog-title>Are you sure?</h3>
+  <div mat-dialog-content>
+    <ul class="clearfix">
+      <li>
+        <p><span class="font-weight-bold">Patient: </span>{{ data.patient_name || ('#' + data.patient) }}</p>
+      </li>
+      <li>
+        <p>
+          <span class="font-weight-bold">Slot: </span>{{ data.date | date: 'MM/dd/yyyy' }}
+          {{ data.start }} - {{ data.end }}
+        </p>
+      </li>
+      <li>
+        <p><span class="font-weight-bold">Cabinet: </span>{{ data.cabinet ? ('#' + data.cabinet) : '-' }}</p>
+      </li>
+    </ul>
+    <p class="mb-0">
+      The slot is released and cannot be recovered. Prescriptions and invoices
+      attached to this appointment are removed with it.
+    </p>
+  </div>
+  <div mat-dialog-actions class="mb-1">
+    <button mat-flat-button color="warn" [disabled]="loading" (click)="confirmDelete()">
+      {{ loading ? 'Deleting...' : 'Delete' }}
+    </button>
+    <button mat-flat-button (click)="onNoClick()" tabindex="-1">Cancel</button>
+  </div>
+</div>

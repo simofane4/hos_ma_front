@@ -1,0 +1,166 @@
+<section class="content">
+  <div class="content-block">
+    <div class="block-header">
+      <app-breadcrumb [title]="'Appointments'" [items]="['Appointments']" [active_item]="'Appointments'">
+      </app-breadcrumb>
+    </div>
+    <div class="row">
+      <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <div class="card">
+          <div class="body">
+            <div class="table-responsive">
+              <div class="materialTableHeader">
+                <div class="row">
+                  <div class="col-8">
+                    <ul class="header-buttons-left ms-0">
+                      <li class="dropdown">
+                        <h2>
+                          <strong>Appointments</strong>
+                        </h2>
+                      </li>
+                      <li class="dropdown m-l-20">
+                        <label for="search-input"><i class="material-icons search-icon">search</i></label>
+                        <input placeholder="Search patient or description" type="text" #filter
+                          class="browser-default search-field" aria-label="Search box">
+                      </li>
+                      <li class="dropdown m-l-20">
+                        <mat-form-field appearance="outline" class="filter-field">
+                          <mat-label>Cabinet</mat-label>
+                          <mat-select [(ngModel)]="cabinetFilter" (selectionChange)="onFilterChange()">
+                            <mat-option value="">All</mat-option>
+                            <mat-option *ngFor="let c of cabinets" [value]="c.id">
+                              {{ c.name }} ({{ c.number }})
+                            </mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </li>
+                      <li class="dropdown m-l-10">
+                        <mat-form-field appearance="outline" class="filter-field">
+                          <mat-label>Payment</mat-label>
+                          <mat-select [(ngModel)]="paidFilter" (selectionChange)="onFilterChange()">
+                            <mat-option value="">All</mat-option>
+                            <mat-option [value]="true">Paid</mat-option>
+                            <mat-option [value]="false">Unpaid</mat-option>
+                          </mat-select>
+                        </mat-form-field>
+                      </li>
+                      <li class="dropdown m-l-10">
+                        <mat-form-field appearance="outline" class="filter-field date-field">
+                          <mat-label>From</mat-label>
+                          <input matInput type="date" [(ngModel)]="fromFilter" (change)="onFilterChange()">
+                        </mat-form-field>
+                      </li>
+                      <li class="dropdown m-l-10">
+                        <mat-form-field appearance="outline" class="filter-field date-field">
+                          <mat-label>To</mat-label>
+                          <input matInput type="date" [(ngModel)]="toFilter" (change)="onFilterChange()">
+                        </mat-form-field>
+                      </li>
+                      <li class="dropdown m-l-10" *ngIf="hasFilters">
+                        <button mat-stroked-button color="warn" (click)="clearFilters()">Clear</button>
+                      </li>
+                    </ul>
+                  </div>
+                  <div class="col-4">
+                    <ul class="header-buttons">
+                      <li>
+                        <div class="icon-button-demo">
+                          <button mat-mini-fab color="primary" (click)="addNew()" aria-label="Add appointment">
+                            <mat-icon class="col-white">add</mat-icon>
+                          </button>
+                        </div>
+                      </li>
+                      <li>
+                        <div class="icon-button-demo">
+                          <button mat-mini-fab color="primary" (click)="refresh()" aria-label="Refresh">
+                            <mat-icon class="col-white">refresh</mat-icon>
+                          </button>
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+
+              <mat-table #table [dataSource]="dataSource" matSort class="mat-cell">
+                <!-- Patient Column -->
+                <ng-container matColumnDef="patient">
+                  <mat-header-cell *matHeaderCellDef>Patient</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.patient_name || ('#' + row.patient) }}</mat-cell>
+                </ng-container>
+                <!-- Date Column -->
+                <ng-container matColumnDef="date">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Date</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.date | date: 'MM/dd/yyyy' }}</mat-cell>
+                </ng-container>
+                <!-- Slot Column -->
+                <ng-container matColumnDef="time">
+                  <mat-header-cell *matHeaderCellDef mat-sort-header>Time</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.start }} - {{ row.end }}</mat-cell>
+                </ng-container>
+                <!-- Cabinet Column -->
+                <ng-container matColumnDef="cabinet">
+                  <mat-header-cell *matHeaderCellDef>Cabinet</mat-header-cell>
+                  <mat-cell *matCellDef="let row">{{ row.cabinet ? ('#' + row.cabinet) : '-' }}</mat-cell>
+                </ng-container>
+                <!-- Description Column -->
+                <ng-container matColumnDef="description">
+                  <mat-header-cell *matHeaderCellDef>Description</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <div class="mat-cell-text-muted" *ngIf="row.description; else noDescription">
+                      {{ row.description }}
+                    </div>
+                    <ng-template #noDescription>-</ng-template>
+                  </mat-cell>
+                </ng-container>
+                <!-- Payment Column -->
+                <ng-container matColumnDef="payed">
+                  <mat-header-cell *matHeaderCellDef>Payment</mat-header-cell>
+                  <mat-cell *matCellDef="let row">
+                    <span class="badge" [ngClass]="row.payed ? 'badge-paid' : 'badge-unpaid'">
+                      {{ row.payed ? 'Paid' : 'Unpaid' }}
+                    </span>
+                  </mat-cell>
+                </ng-container>
+                <!-- Actions -->
+                <ng-container matColumnDef="actions">
+                  <mat-header-cell class="pr-0" *matHeaderCellDef>Actions</mat-header-cell>
+                  <mat-cell *matCellDef="let row" class="pr-0">
+                    <button mat-icon-button (click)="$event.stopPropagation(); editCall(row)" class="tbl-action-btn"
+                      aria-label="Edit appointment">
+                      <app-feather-icons [icon]="'edit'" [class]="'tbl-fav-edit'"></app-feather-icons>
+                    </button>
+                    <button mat-icon-button (click)="$event.stopPropagation(); deleteItem(row)" class="tbl-action-btn"
+                      aria-label="Delete appointment">
+                      <app-feather-icons [icon]="'trash-2'" [class]="'tbl-fav-delete'"></app-feather-icons>
+                    </button>
+                  </mat-cell>
+                </ng-container>
+                <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+                <mat-row *matRowDef="let row; columns: displayedColumns;" (click)="editCall(row)"
+                  [style.cursor]="'pointer'" matRipple>
+                </mat-row>
+              </mat-table>
+
+              <!-- Loading spinner -->
+              <div *ngIf="dataSource.loading" class="tbl-spinner">
+                <mat-progress-spinner color="primary" [diameter]="40" mode="indeterminate">
+                </mat-progress-spinner>
+              </div>
+              <div *ngIf="!dataSource.loading && dataSource.failed" class="no-results">
+                Could not load appointments. Check your connection and try again.
+              </div>
+              <div *ngIf="!dataSource.loading && !dataSource.failed && dataSource.total === 0" class="no-results">
+                No results
+              </div>
+
+              <mat-paginator #paginator [length]="dataSource.total" [pageIndex]="0" [pageSize]="10"
+                [pageSizeOptions]="[10, 25, 50, 100]">
+              </mat-paginator>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

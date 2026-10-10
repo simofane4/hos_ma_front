@@ -1,0 +1,30 @@
+// Header above the repeatable medicine lines.
+.medicines-header
+  align-items: center
+  display: flex
+  justify-content: space-between
+  margin-bottom: 0.5rem
+
+// One row: medicament, dosage, duration, remove.
+.medicine-line
+  align-items: flex-start
+  display: flex
+  gap: 0.5rem
+
+  .line-medicament
+    flex: 3 1 0
+
+  .line-field
+    flex: 1 1 0
+
+  button
+    margin-top: 0.25rem
+
+// The form fields are inline, so they cannot inherit the stacked label spacing.
+:host ::ng-deep .medicine-line .mat-form-field-wrapper
+  padding-bottom: 0
+
+:host ::ng-deep .medicine-line .mat-form-field-infix
+  min-height: 40px
+  padding-bottom: 8px
+  padding-top: 8px

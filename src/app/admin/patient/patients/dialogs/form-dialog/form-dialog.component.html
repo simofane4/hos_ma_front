@@ -1,0 +1,149 @@
+<div class="addContainer">
+  <div class="modalHeader">
+    <div class="editRowModal">
+      <div class="modalHeader clearfix">
+        <img [src]="patient?.img || 'assets/images/user/patient.jpg'" alt="avatar">
+        <div class="modal-about">
+          <div class="font-weight-bold p-t-5 msl-3 font-17">
+            {{ dialogTitle }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <form class="register-form m-4" [formGroup]="patientForm" (ngSubmit)="confirmAdd()">
+      <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>First name</mat-label>
+            <input matInput formControlName="firstname" required>
+            <mat-icon matSuffix>face</mat-icon>
+            <mat-error *ngIf="patientForm.get('firstname').hasError('required')">
+              First name is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Last name</mat-label>
+            <input matInput formControlName="lastname" required>
+            <mat-icon matSuffix>face</mat-icon>
+            <mat-error *ngIf="patientForm.get('lastname').hasError('required')">
+              Last name is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>CIN</mat-label>
+            <input matInput formControlName="cin" required>
+            <mat-icon matSuffix>badge</mat-icon>
+            <mat-error *ngIf="patientForm.get('cin').hasError('required')">
+              CIN is required
+            </mat-error>
+            <mat-error *ngIf="patientForm.get('cin').hasError('maxlength')">
+              At most 25 characters
+            </mat-error>
+            <mat-hint>Unique inside the cabinet</mat-hint>
+          </mat-form-field>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Phone</mat-label>
+            <input matInput formControlName="phone" required>
+            <mat-icon matSuffix>phone</mat-icon>
+            <mat-error *ngIf="patientForm.get('phone').hasError('required')">
+              Phone is required
+            </mat-error>
+            <mat-error *ngIf="patientForm.get('phone').hasError('maxlength')">
+              At most 25 characters
+            </mat-error>
+            <mat-hint>Unique inside the cabinet</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Gender</mat-label>
+            <mat-select formControlName="gender" required>
+              <mat-option value="Male">Male</mat-option>
+              <mat-option value="Female">Female</mat-option>
+            </mat-select>
+            <mat-error *ngIf="patientForm.get('gender').hasError('required')">
+              Gender is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-xl-6 col-lg-6 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Age</mat-label>
+            <input matInput type="number" formControlName="age">
+            <mat-icon matSuffix>cake</mat-icon>
+            <mat-error *ngIf="patientForm.get('age').hasError('min') ||
+                            patientForm.get('age').hasError('max')">
+              Between 0 and 130
+            </mat-error>
+            <mat-hint>Optional for a minor</mat-hint>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Only an admin picks a cabinet: staff are locked to their own. -->
+      <div class="row" *ngIf="isAdmin">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Cabinet</mat-label>
+            <mat-select formControlName="cabinet" required>
+              <mat-option *ngFor="let cabinet of cabinets" [value]="cabinet.id">
+                {{ cabinet.name }} ({{ cabinet.number }})
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>business</mat-icon>
+            <mat-error *ngIf="patientForm.get('cabinet').hasError('required')">
+              Cabinet is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Address</mat-label>
+            <textarea matInput rows="2" formControlName="address"></textarea>
+            <mat-icon matSuffix>location_on</mat-icon>
+            <mat-error *ngIf="patientForm.get('address').hasError('maxlength')">
+              At most 500 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-checkbox formControlName="child">This patient is a minor</mat-checkbox>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <div class="example-button-row">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!patientForm.valid || loading">
+              {{ action === 'edit' ? 'Update' : 'Save' }}
+            </button>
+            <button mat-raised-button color="warn" (click)="onNoClick()" tabindex="-1">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,65 @@
+<div class="addContainer">
+  <div class="modalHeader">
+    <div class="editRowModal">
+      <div class="modalHeader clearfix">
+        <div class="modal-about">
+          <div class="font-weight-bold p-t-5 msl-3 font-17">
+            {{ dialogTitle }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <form class="register-form m-4" [formGroup]="form" (ngSubmit)="confirmAdd()">
+      <!-- A replacement keeps its patient, so the picker is hidden then. -->
+      <div class="row" *ngIf="action === 'add'">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Patient</mat-label>
+            <input matInput formControlName="patientLabel" [matAutocomplete]="auto"
+              (input)="onPatientSearch($any($event.target).value)">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-error *ngIf="form.get('patient').hasError('required')">Patient is required</mat-error>
+          </mat-form-field>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onPatientSelected($event.option.value)">
+            <mat-option *ngFor="let patient of patients" [value]="patient">
+              {{ patient.firstname }} {{ patient.lastname }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Document</mat-label>
+            <input matInput type="file" (change)="onFilePicked($event)">
+            <mat-icon matSuffix>attach_file</mat-icon>
+            <mat-hint>PDF, image or scan, up to 5 MB</mat-hint>
+          </mat-form-field>
+          <mat-error *ngIf="form.get('file').hasError('required')">
+            Pick a file to upload
+          </mat-error>
+          <mat-error *ngIf="form.get('file').hasError('tooLarge')">
+            The file is too large ({{ fileSize }}). The limit is 5 MB.
+          </mat-error>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <div class="example-button-row">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid || loading">
+              {{ loading ? 'Uploading...' : (action === 'edit' ? 'Replace' : 'Upload') }}
+            </button>
+            <button mat-raised-button color="warn" (click)="onNoClick()" tabindex="-1">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

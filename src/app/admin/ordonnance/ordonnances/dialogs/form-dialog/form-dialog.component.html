@@ -1,0 +1,140 @@
+<div class="addContainer">
+  <div class="modalHeader">
+    <div class="editRowModal">
+      <div class="modalHeader clearfix">
+        <div class="modal-about">
+          <div class="font-weight-bold p-t-5 msl-3 font-17">
+            {{ dialogTitle }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <form class="register-form m-4" [formGroup]="form" (ngSubmit)="confirmAdd()">
+      <!-- Adding: pick the patient first so their appointments can be listed. -->
+      <div class="row" *ngIf="action === 'add'">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Patient</mat-label>
+            <input matInput formControlName="patientLabel" [matAutocomplete]="auto"
+              (input)="onPatientSearch($any($event.target).value)">
+            <mat-icon matSuffix>person</mat-icon>
+            <mat-hint>Start typing to load their appointments</mat-hint>
+          </mat-form-field>
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="onPatientSelected($event.option.value)">
+            <mat-option *ngFor="let patient of patients" [value]="patient">
+              {{ patient.firstname }} {{ patient.lastname }}
+            </mat-option>
+          </mat-autocomplete>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Appointment</mat-label>
+            <mat-select formControlName="appointment" required>
+              <mat-option *ngFor="let appointment of appointments" [value]="appointment.id">
+                {{ appointmentLabel(appointment) }}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>event</mat-icon>
+            <mat-error *ngIf="form.get('appointment').hasError('required')">
+              Appointment is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Only an admin picks a cabinet: staff are locked to their own. -->
+      <div class="row" *ngIf="isAdmin">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Cabinet</mat-label>
+            <mat-select formControlName="cabinet" required>
+              <mat-option *ngFor="let cabinet of cabinets" [value]="cabinet.id">
+                {{ cabinet.name }} ({{ cabinet.number }})
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>business</mat-icon>
+            <mat-error *ngIf="form.get('cabinet').hasError('required')">Cabinet is required</mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput rows="2" formControlName="description"></textarea>
+            <mat-icon matSuffix>notes</mat-icon>
+            <mat-error *ngIf="form.get('description').hasError('maxlength')">
+              At most 2000 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Medicine lines -->
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <div class="medicines-header">
+            <span class="font-weight-bold">Medicines</span>
+            <button mat-stroked-button color="primary" type="button" (click)="addLine()">
+              <mat-icon>add</mat-icon>
+              Add line
+            </button>
+          </div>
+
+          <div formArrayName="medicaments">
+            <div *ngFor="let line of lines.controls; let i = index" [formGroupName]="i" class="medicine-line">
+              <mat-form-field appearance="outline" class="line-medicament">
+                <mat-label>Medicament</mat-label>
+                <input matInput formControlName="medicament" [matAutocomplete]="medAuto" required
+                  placeholder="{{ medicamentName(line.value.medicament) }}"
+                  (input)="onMedicamentSearch($any($event.target).value)">
+                <mat-error *ngIf="line.get('medicament').hasError('required')">Required</mat-error>
+              </mat-form-field>
+              <mat-autocomplete #medAuto="matAutocomplete">
+                <mat-option *ngFor="let m of medicaments" [value]="m.id">{{ m.name }}</mat-option>
+              </mat-autocomplete>
+
+              <mat-form-field appearance="outline" class="line-field">
+                <mat-label>Dosage</mat-label>
+                <input matInput formControlName="dosage" placeholder="1 tablet">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="line-field">
+                <mat-label>Duration</mat-label>
+                <input matInput formControlName="duration" placeholder="5 days">
+              </mat-form-field>
+
+              <button mat-icon-button type="button" color="warn" (click)="removeLine(i)"
+                aria-label="Remove medicine line">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+          <p class="mat-cell-text-muted" *ngIf="!lines.controls.length">
+            No medicine added yet. A prescription may be saved without any.
+          </p>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <div class="example-button-row">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid || loading">
+              {{ action === 'edit' ? 'Update' : 'Save' }}
+            </button>
+            <button mat-raised-button color="warn" (click)="onNoClick()" tabindex="-1">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

@@ -28,7 +28,8 @@ export interface AssistantCreateRequest {
   first_name: string;
   last_name: string;
   cabinet: number;
-  img?: File;
+  /** Optional upload; a File switches the request to multipart/form-data. */
+  img?: File | string | null;
   cin?: string;
   gender: 'Female' | 'Male';
   phone: string;
@@ -40,7 +41,7 @@ export interface AssistantUpdateRequest {
   first_name?: string;
   last_name?: string;
   cabinet?: number;
-  img?: File;
+  img?: File | string | null;
   cin?: string;
   gender?: 'Female' | 'Male';
   phone?: string;

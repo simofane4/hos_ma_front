@@ -6,7 +6,10 @@ export class User {
   password: string;
   firstName: string;
   lastName: string;
+  email: string;
   role: string;
+  cabinetId: number;
+  isActive: boolean;
   token: string;
   refresh: string;
 }

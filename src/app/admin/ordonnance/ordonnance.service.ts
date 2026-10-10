@@ -1,52 +1,39 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { environment } from 'src/environments/environment';
-import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
-import { Ordonnance, OrdonnanceRequest, PaginatedOrdonnanceList } from "./ordonnance.model";
+import { Observable } from "rxjs";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { environment } from "src/environments/environment";
+import {
+  Ordonnance,
+  OrdonnanceFilters,
+  OrdonnanceRequest,
+  OrdonnanceUpdateRequest,
+  PaginatedOrdonnanceList,
+} from "./ordonnance.model";
 
 @Injectable()
-export class OrdonnanceService extends UnsubscribeOnDestroyAdapter {
+export class OrdonnanceService {
   private readonly API_URL = `${environment.restUrl}/api/ordonnances/`;
-  
-  isTblLoading = true;
-  dataChange: BehaviorSubject<Ordonnance[]> = new BehaviorSubject<Ordonnance[]>([]);
-  dialogData: any;
 
-  constructor(private httpClient: HttpClient) {
-    super();
-  }
+  constructor(private httpClient: HttpClient) {}
 
-  get data(): Ordonnance[] {
-    return this.dataChange.value;
-  }
-
-  getDialogData() {
-    return this.dialogData;
-  }
-
-  /** CRUD METHODS */
-  getAllOrdonnances(): void {
-    this.subs.sink = this.httpClient.get<PaginatedOrdonnanceList>(this.API_URL).subscribe(
-      (data) => {
-        this.isTblLoading = false;
-        this.dataChange.next(data.results);
-      },
-      (error: HttpErrorResponse) => {
-        this.isTblLoading = false;
-        console.log(error.name + " " + error.message);
-      }
-    );
+  /** One page of prescriptions, filtered and sorted by the server. */
+  getPage(
+    filters: OrdonnanceFilters = {}
+  ): Observable<PaginatedOrdonnanceList> {
+    return this.httpClient.get<PaginatedOrdonnanceList>(this.API_URL, {
+      params: this.toParams(filters),
+    });
   }
 
   addOrdonnance(ordonnance: OrdonnanceRequest): Observable<any> {
-    this.dialogData = ordonnance;
     return this.httpClient.post(this.API_URL, ordonnance);
   }
 
-  updateOrdonnance(ordonnance: OrdonnanceRequest & { id: number }): Observable<any> {
-    this.dialogData = ordonnance;
-    return this.httpClient.put(`${this.API_URL}${ordonnance.id}/`, ordonnance);
+  updateOrdonnance(
+    ordonnance: OrdonnanceUpdateRequest & { id: number }
+  ): Observable<any> {
+    const { id, ...payload } = ordonnance;
+    return this.httpClient.patch(`${this.API_URL}${id}/`, payload);
   }
 
   deleteOrdonnance(id: number): Observable<any> {
@@ -55,5 +42,16 @@ export class OrdonnanceService extends UnsubscribeOnDestroyAdapter {
 
   getOrdonnance(id: number): Observable<Ordonnance> {
     return this.httpClient.get<Ordonnance>(`${this.API_URL}${id}/`);
+  }
+
+  private toParams(filters: OrdonnanceFilters): HttpParams {
+    let params = new HttpParams();
+    Object.keys(filters).forEach((key) => {
+      const value = filters[key];
+      if (value !== undefined && value !== null && value !== "") {
+        params = params.set(key, String(value));
+      }
+    });
+    return params;
   }
 }

@@ -1,52 +1,43 @@
 import { Injectable } from "@angular/core";
-import { BehaviorSubject, Observable } from "rxjs";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
-import { environment } from 'src/environments/environment';
-import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
-import { Appointment, AppointmentRequest, PaginatedAppointmentList } from "./appointment.model";
+import { Observable } from "rxjs";
+import { HttpClient, HttpParams } from "@angular/common/http";
+import { environment } from "src/environments/environment";
+import {
+  Appointment,
+  AppointmentFilters,
+  AppointmentRequest,
+  AppointmentUpdateRequest,
+  PaginatedAppointmentList,
+} from "./appointment.model";
 
 @Injectable()
-export class AppointmentService extends UnsubscribeOnDestroyAdapter {
+export class AppointmentService {
   private readonly API_URL = `${environment.restUrl}/api/appointments/`;
-  
-  isTblLoading = true;
-  dataChange: BehaviorSubject<Appointment[]> = new BehaviorSubject<Appointment[]>([]);
-  dialogData: any;
 
-  constructor(private httpClient: HttpClient) {
-    super();
-  }
+  constructor(private httpClient: HttpClient) {}
 
-  get data(): Appointment[] {
-    return this.dataChange.value;
-  }
-
-  getDialogData() {
-    return this.dialogData;
-  }
-
-  /** CRUD METHODS */
-  getAllAppointments(params?: any): void {
-    this.subs.sink = this.httpClient.get<PaginatedAppointmentList>(this.API_URL, { params }).subscribe(
-      (data) => {
-        this.isTblLoading = false;
-        this.dataChange.next(data.results);
-      },
-      (error: HttpErrorResponse) => {
-        this.isTblLoading = false;
-        console.log(error.name + " " + error.message);
-      }
-    );
+  /**
+   * One page of appointments, filtered and sorted by the server.
+   *
+   * The endpoint rejects overlapping slots inside a cabinet, so the screen has to
+   * show which day and cabinet a row occupies rather than treating it as a free
+   * standing record.
+   */
+  getPage(filters: AppointmentFilters = {}): Observable<PaginatedAppointmentList> {
+    return this.httpClient.get<PaginatedAppointmentList>(this.API_URL, {
+      params: this.toParams(filters),
+    });
   }
 
   addAppointment(appointment: AppointmentRequest): Observable<any> {
-    this.dialogData = appointment;
     return this.httpClient.post(this.API_URL, appointment);
   }
 
-  updateAppointment(appointment: AppointmentRequest & { id: number }): Observable<any> {
-    this.dialogData = appointment;
-    return this.httpClient.put(`${this.API_URL}${appointment.id}/`, appointment);
+  updateAppointment(
+    appointment: AppointmentUpdateRequest & { id: number }
+  ): Observable<any> {
+    const { id, ...payload } = appointment;
+    return this.httpClient.patch(`${this.API_URL}${id}/`, payload);
   }
 
   deleteAppointment(id: number): Observable<any> {
@@ -55,5 +46,16 @@ export class AppointmentService extends UnsubscribeOnDestroyAdapter {
 
   getAppointment(id: number): Observable<Appointment> {
     return this.httpClient.get<Appointment>(`${this.API_URL}${id}/`);
+  }
+
+  private toParams(filters: AppointmentFilters): HttpParams {
+    let params = new HttpParams();
+    Object.keys(filters).forEach((key) => {
+      const value = filters[key];
+      if (value !== undefined && value !== null && value !== "") {
+        params = params.set(key, String(value));
+      }
+    });
+    return params;
   }
 }

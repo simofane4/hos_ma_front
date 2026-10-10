@@ -1,1 +1,11 @@
+// Sections that are in the navigation but whose screen does not exist yet.
+// They stay visible so the structure is obvious, but read as unavailable.
+.nav-item-disabled
+  cursor: default
+  opacity: 0.45
 
+  &:hover,
+  &:focus
+    background: transparent
+    color: inherit
+    text-decoration: none

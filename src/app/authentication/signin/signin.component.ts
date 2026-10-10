@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { Router, ActivatedRoute } from "@angular/router";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import { AuthService } from "src/app/core/service/auth.service";
+import { apiErrorMessage } from "src/app/core/api-error";
 import { Role } from "src/app/core/models/role";
 import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
 @Component({
@@ -69,6 +70,8 @@ export class SigninComponent
                   this.router.navigate(["/doctor/dashboard"]);
                 } else if (role === Role.Patient) {
                   this.router.navigate(["/patient/dashboard"]);
+                } else if (role === Role.Assistant) {
+                  this.router.navigate(["/assistant/dashboard"]);
                 } else {
                   this.router.navigate(["/authentication/signin"]);
                 }
@@ -79,7 +82,7 @@ export class SigninComponent
             }
           },
           (error) => {
-            this.error = error;
+            this.error = apiErrorMessage(error);
             this.submitted = false;
             this.loading = false;
           }

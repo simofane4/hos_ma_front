@@ -1,0 +1,78 @@
+<div class="addContainer">
+  <div class="modalHeader">
+    <div class="editRowModal">
+      <div class="modalHeader clearfix">
+        <div class="modal-about">
+          <div class="font-weight-bold p-t-5 msl-3 font-17">
+            {{ dialogTitle }}
+          </div>
+        </div>
+      </div>
+    </div>
+    <button mat-icon-button (click)="dialogRef.close()" aria-label="Close dialog">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+  <div mat-dialog-content>
+    <form class="register-form m-4" [formGroup]="form" (ngSubmit)="confirmAdd()">
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <!-- `name` for specialities and medicaments, `title` for acts. -->
+            <mat-label>{{ spec.labelField === 'name' ? 'Name' : 'Title' }}</mat-label>
+            <input matInput [formControlName]="spec.labelField" required>
+            <mat-icon matSuffix>label</mat-icon>
+            <mat-error *ngIf="form.get(spec.labelField).hasError('required')">
+              {{ spec.labelField === 'name' ? 'Name is required' : 'Title is required' }}
+            </mat-error>
+            <mat-error *ngIf="form.get(spec.labelField).hasError('maxlength')">
+              At most 255 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row" *ngIf="spec.hasDescription">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Description</mat-label>
+            <textarea matInput rows="3" formControlName="description"></textarea>
+            <mat-icon matSuffix>notes</mat-icon>
+            <mat-error *ngIf="form.get('description').hasError('maxlength')">
+              At most 2000 characters
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <!-- Only an admin picks a cabinet: staff are locked to their own. -->
+      <div class="row" *ngIf="isAdmin">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <mat-form-field class="example-full-width" appearance="outline">
+            <mat-label>Cabinet</mat-label>
+            <mat-select formControlName="cabinet" required>
+              <mat-option *ngFor="let cabinet of cabinets" [value]="cabinet.id">
+                {{ cabinet.name }} ({{ cabinet.number }})
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix>business</mat-icon>
+            <mat-error *ngIf="form.get('cabinet').hasError('required')">
+              Cabinet is required
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 mb-2">
+          <div class="example-button-row">
+            <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid || loading">
+              {{ action === 'edit' ? 'Update' : 'Save' }}
+            </button>
+            <button mat-raised-button color="warn" (click)="onNoClick()" tabindex="-1">Cancel</button>
+          </div>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>

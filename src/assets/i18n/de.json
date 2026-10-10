@@ -9,7 +9,8 @@
         "DASHBOARD1": "Dashboard 1",
         "DASHBOARD2": "Dashboard 2",
         "DOCTOR-DASHBOARD": "Doktor Dashboard",
-        "PATIENT-DASHBOARD": "Patienten-Dashboard"
+        "PATIENT-DASHBOARD": "Patienten-Dashboard",
+        "ASSISTANT-DASHBOARD": "Assistenz-Dashboard"
       }
     },
     "CABINET": {
@@ -66,15 +67,15 @@
         "INVOICE": "Rechnung"
       }
     },
-    "DOCTOR": {    
-        "DASHBOARD": "Dashboard",
-        "APPOINTMENTS": "Termine",
-        "DOCTORS": "Ärztinnen",
-        "PATIENTS": "Patientinnen",
-        "SETTINGS": "die Einstellungen",
-        "CHAT": "Plaudern"
+    "DOCTOR": {
+      "DASHBOARD": "Dashboard",
+      "APPOINTMENTS": "Termine",
+      "DOCTORS": "Ärztinnen",
+      "PATIENTS": "Patientinnen",
+      "SETTINGS": "die Einstellungen",
+      "CHAT": "Plaudern"
     },
-    "PATIENT": {    
+    "PATIENT": {
       "TEXT": "Geduldig",
       "DASHBOARD": "Dashboard",
       "APPOINTMENTS": {
@@ -102,6 +103,43 @@
     },
     "CONTACTS": {
       "TEXT": "Kontakte"
-    }
+    },
+    "CABINETS": {
+      "TEXT": "Praxisen"
+    },
+    "SPECIALITES": {
+      "TEXT": "Fachrichtungen"
+    },
+    "ASSISTANTS": {
+      "TEXT": "Assistenz"
+    },
+    "USERS": {
+      "TEXT": "Benutzer"
+    },
+    "PATIENTFILES": {
+      "TEXT": "Patientenakten"
+    },
+    "ACTESDEMANDES": {
+      "TEXT": "Angeforderte Leistungen"
+    },
+    "ACTESFAITS": {
+      "TEXT": "Erbrachte Leistungen"
+    },
+    "MEDICAMENTS": {
+      "TEXT": "Medikamente"
+    },
+    "ORDONNANCES": {
+      "TEXT": "Rezepte"
+    },
+    "INVOICES": {
+      "TEXT": "Rechnungen"
+    },
+    "ME": {
+      "TEXT": "Mein Konto"
+    },
+    "LOGOUT": {
+      "TEXT": "Abmelden"
+    },
+    "COMINGSOON": "Noch nicht verfügbar"
   }
 }

@@ -1,9 +1,17 @@
 import { Injectable } from "@angular/core";
 import { BehaviorSubject, Observable } from "rxjs";
-import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { HttpClient, HttpErrorResponse, HttpParams } from "@angular/common/http";
 import { environment } from 'src/environments/environment';
 import { UnsubscribeOnDestroyAdapter } from "src/app/shared/UnsubscribeOnDestroyAdapter";
+import { apiErrorMessage } from "src/app/core/api-error";
 import { Assistant, AssistantCreateRequest, AssistantUpdateRequest, PaginatedAssistantList } from "./assistant.model";
+
+export interface AssistantFilters {
+  cabinet?: number;
+  gender?: 'Male' | 'Female';
+  search?: string;
+  page?: number;
+}
 
 @Injectable()
 export class AssistantService extends UnsubscribeOnDestroyAdapter {
@@ -26,53 +34,67 @@ export class AssistantService extends UnsubscribeOnDestroyAdapter {
   }
 
   /** CRUD METHODS */
-  getAllAssistants(): void {
-    this.subs.sink = this.httpClient.get<PaginatedAssistantList>(this.API_URL).subscribe(
-      (data) => {
-        this.isTblLoading = false;
-        this.dataChange.next(data.results);
-      },
-      (error: HttpErrorResponse) => {
-        this.isTblLoading = false;
-        console.log(error.name + " " + error.message);
-      }
+  getAllAssistants(filters?: AssistantFilters): void {
+    this.isTblLoading = true;
+    let params = new HttpParams();
+    if (filters) {
+      Object.keys(filters).forEach((key) => {
+        const value = filters[key];
+        if (value !== undefined && value !== null && value !== '') {
+          params = params.set(key, String(value));
+        }
+      });
+    }
+    this.subs.sink = this.httpClient
+      .get<PaginatedAssistantList>(this.API_URL, { params })
+      .subscribe(
+        (data) => {
+          this.isTblLoading = false;
+          this.dataChange.next(data.results);
+        },
+        (error: HttpErrorResponse) => {
+          this.isTblLoading = false;
+          console.log(apiErrorMessage(error));
+        }
+      );
+  }
+
+  addAssistant(
+    assistant: AssistantCreateRequest
+  ): Observable<any> {
+    this.dialogData = assistant;
+    const { img, ...fields } = assistant;
+
+    // `img` is an image upload, so the payload has to be multipart whenever
+    // a file was picked; otherwise the documented JSON body is enough.
+    return this.httpClient.post(
+      this.API_URL,
+      img instanceof File ? this.toFormData(fields, img) : fields
     );
   }
 
-  addAssistant(assistant: AssistantCreateRequest): Observable<any> {
-    this.dialogData = assistant;
-    const formData = new FormData();
-    
-    Object.keys(assistant).forEach(key => {
-      const value = assistant[key as keyof AssistantCreateRequest];
-      if (value !== undefined && value !== null) {
-        if (key === 'img' && value instanceof File) {
-          formData.append(key, value, value.name);
-        } else {
-          formData.append(key, String(value));
-        }
-      }
-    });
+  updateAssistant(
+    assistant: AssistantUpdateRequest & { id: number }
+  ): Observable<any> {
+    const { id, img, ...payload } = assistant;
+    this.dialogData = { ...payload, id };
 
-    return this.httpClient.post(this.API_URL, formData);
+    return this.httpClient.patch(
+      `${this.API_URL}${id}/`,
+      img instanceof File ? this.toFormData(payload, img) : payload
+    );
   }
 
-  updateAssistant(assistant: AssistantUpdateRequest & { id: number }): Observable<any> {
-    this.dialogData = assistant;
+  private toFormData(fields: Record<string, any>, img: File): FormData {
     const formData = new FormData();
-    
-    Object.keys(assistant).forEach(key => {
-      const value = assistant[key as keyof typeof assistant];
-      if (value !== undefined && value !== null && key !== 'id') {
-        if (key === 'img' && value instanceof File) {
-          formData.append(key, value, value.name);
-        } else {
-          formData.append(key, String(value));
-        }
+    Object.keys(fields).forEach((key) => {
+      const value = fields[key];
+      if (value !== undefined && value !== null && value !== '') {
+        formData.append(key, String(value));
       }
     });
-
-    return this.httpClient.put(`${this.API_URL}${assistant.id}/`, formData);
+    formData.append('img', img, img.name);
+    return formData;
   }
 
   deleteAssistant(id: number): Observable<any> {
